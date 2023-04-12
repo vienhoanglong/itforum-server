@@ -4,14 +4,16 @@ import { Model } from 'mongoose';
 import * as bcrypt from 'bcrypt';
 import * as jwt from 'jsonwebtoken';
 import { LoginDto, RegisterDto } from './auth.dto';
-import { User } from 'src/common/schemas/user.schema';
+import { User, UserDocument } from 'src/common/schemas/user.schema';
 
 @Injectable()
 export class AuthService {
-  constructor(@InjectModel(User.name) private userModel: Model<User>) {}
+  constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) {}
 
   async login(loginDto: LoginDto) {
-    const user = await this.userModel.findOne({ email: loginDto.email });
+    const user = await this.userModel
+      .findOne({ username: loginDto.username })
+      .select('+password');
 
     if (!user) {
       throw new Error('User not found');
@@ -28,7 +30,6 @@ export class AuthService {
 
     const accessToken = this.generateAccessToken(user);
     const refreshToken = this.generateRefreshToken(user);
-
     return {
       accessToken,
       refreshToken,
@@ -39,12 +40,11 @@ export class AuthService {
   async register(registerDto: RegisterDto) {
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(registerDto.password, salt);
-
     const newUser = new this.userModel({
+      username: registerDto.username,
       email: registerDto.email,
       password: hashedPassword,
     });
-
     const user = await newUser.save();
 
     const accessToken = this.generateAccessToken(user);

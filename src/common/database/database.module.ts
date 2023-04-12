@@ -1,31 +1,30 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
-import {
-  ChatGPTMessage,
-  ChatGPTMessageSchema,
-} from '../schemas/chatgpt.schema';
 import { User, UserSchema } from '../schemas/user.schema';
-
+import { ConfigModule, ConfigService } from '@nestjs/config';
 @Module({
   imports: [
-    MongooseModule.forRoot(
-      'mongodb+srv://vienlongdev:lerWpglnZ2jFCFYj@cluster0.6ul8lgy.mongodb.net/?retryWrites=true&w=majority',
-      {
+    ConfigModule.forRoot({ isGlobal: true }), // import the ConfigModule
+    MongooseModule.forRootAsync({
+      imports: [ConfigModule], // import the ConfigModule
+      useFactory: async (configService: ConfigService) => ({
+        uri: configService.get<string>('MONGODB_URI'),
+        dbName: configService.get<string>('DB_NAME'),
         useNewUrlParser: true,
         useUnifiedTopology: true,
-      },
-    ),
+      }),
+      inject: [ConfigService], // inject the ConfigService
+    }),
     MongooseModule.forFeature([
-      { name: ChatGPTMessage.name, schema: ChatGPTMessageSchema },
       { name: User.name, schema: UserSchema },
       //Add more...
     ]),
   ],
   exports: [MongooseModule],
 })
-// export class DatabaseModule {}
-export class DatabaseModule {
-  constructor() {
-    console.log('Connected to MongoDB Atlas successfully');
-  }
-}
+export class DatabaseModule {}
+// export class DatabaseModule {
+//   constructor() {
+//     console.log('Connected to MongoDB Atlas successfully');
+//   }
+// }
