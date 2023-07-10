@@ -1,7 +1,11 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
-import { User, UserSchema } from '../schemas/user.schema';
+// import { User, UserSchema } from '../schemas/user.schema';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import * as dotenv from 'dotenv';
+import { User, UserSchema } from '../schemas/user.schema';
+
+dotenv.config();
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }), // import the ConfigModule
