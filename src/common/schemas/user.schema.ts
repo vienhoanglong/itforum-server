@@ -1,10 +1,29 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
-import { IsString, IsEmail, MinLength, MaxLength } from 'class-validator';
+import {
+  IsString,
+  IsEmail,
+  MinLength,
+  MaxLength,
+  IsNumber,
+  IsIn,
+  IsBoolean,
+  IsOptional,
+} from 'class-validator';
 
 export type UserDocument = User & Document;
 @Schema({ timestamps: true })
 export class User extends Document {
+  @Prop({
+    type: String,
+    required: [true, 'Required'],
+    maxlength: [50, 'Must be 50 characters or less'],
+    unique: true,
+    validate: [IsEmail, 'Please enter a valid email'],
+  })
+  @IsString()
+  @MaxLength(50, { message: 'Must be 50 characters or less' })
+  email: string;
   @Prop({
     type: String,
     required: [true, 'Required'],
@@ -16,39 +35,6 @@ export class User extends Document {
   @MinLength(6, { message: 'Must be at least 6 characters' })
   @MaxLength(20, { message: 'Must be less than 20 characters' })
   username: string;
-
-  @Prop({
-    type: String,
-    default: 'New User',
-  })
-  @IsString()
-  displayName: string;
-
-  @Prop({
-    type: String,
-    default: "I'm a new user",
-  })
-  @IsString()
-  about: string;
-
-  @Prop({
-    type: Number,
-    minlength: 14,
-    default: 99,
-  })
-  age: number;
-
-  @Prop({
-    type: String,
-    required: [true, 'Required'],
-    maxlength: [50, 'Must be 50 characters or less'],
-    unique: true,
-    validate: [IsEmail, 'Please enter a valid email'],
-  })
-  @IsString()
-  @MaxLength(50, { message: 'Must be 50 characters or less' })
-  email: string;
-
   @Prop({
     type: String,
     required: [true, 'Required'],
@@ -59,32 +45,33 @@ export class User extends Document {
   @MinLength(8, { message: 'Must be 8 characters or more' })
   password: string;
 
-  @Prop({
-    type: Boolean,
-    default: false,
-  })
-  isAdmin: boolean;
-
+  @IsString()
+  fullName: string;
+  @IsNumber()
+  @IsIn([0, 1, 2, 3])
+  role: number;
+  // Admin: 0, Teacher: 1, Student: 2, Company: 3
   @Prop({
     type: String,
     default:
       'https://preview.redd.it/rrz3hmsxcll71.png?width=640&crop=smart&auto=webp&s=87cc5ed38d8f088ef9fffef7a4c5756b64309d6a',
   })
   @IsString()
-  profilePicture: string;
+  avatar: string;
 
   @Prop({
     type: String,
-    default: '#ff9051',
+    default: "I'm a student",
   })
   @IsString()
-  theme: string;
+  desc: string;
 
   @Prop({
-    type: Number,
-    default: 0,
+    type: String,
+    default: 'Nam',
   })
-  karmas: number;
+  @IsString()
+  gender: string;
 
   @Prop({
     type: [String],
@@ -93,16 +80,19 @@ export class User extends Document {
   followers: string[];
 
   @Prop({
-    type: [String],
-    default: [],
+    type: Boolean,
+    default: false,
   })
-  followings: string[];
+  @IsBoolean()
+  ban: boolean;
 
-  @Prop({
-    type: [String],
-    default: [],
-  })
-  favorites: string[];
+  @IsOptional()
+  @IsString()
+  phoneNumber?: string;
+
+  @IsOptional()
+  @IsString()
+  refreshToken?: string;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
