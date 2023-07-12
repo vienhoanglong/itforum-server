@@ -16,7 +16,7 @@ export type UserDocument = User & Document;
 export class User extends Document {
   @Prop({
     type: String,
-    required: [true, 'Required'],
+    required: true,
     maxlength: [50, 'Must be 50 characters or less'],
     unique: true,
     validate: [IsEmail, 'Please enter a valid email'],
@@ -37,7 +37,7 @@ export class User extends Document {
   username: string;
   @Prop({
     type: String,
-    required: [true, 'Required'],
+    required: true,
     select: false,
     minlength: [8, 'Must be 8 characters or more'],
   })
@@ -47,9 +47,12 @@ export class User extends Document {
 
   @IsString()
   fullName: string;
+
+  @Prop({ type: Number })
   @IsNumber()
   @IsIn([0, 1, 2, 3])
   role: number;
+
   // Admin: 0, Teacher: 1, Student: 2, Company: 3
   @Prop({
     type: String,

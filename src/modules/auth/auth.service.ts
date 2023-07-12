@@ -54,6 +54,7 @@ export class AuthService {
       user.email,
       user.fullName,
       user.username,
+      user.role,
     );
     await this.updateRefreshToken(user._id, tokens.refreshToken);
     return tokens;
@@ -75,6 +76,7 @@ export class AuthService {
     email: string,
     fullName: string,
     username: string,
+    role?: number,
   ) {
     const [accessToken, refreshToken] = await Promise.all([
       this.jwtService.signAsync(
@@ -83,6 +85,7 @@ export class AuthService {
           email,
           fullName,
           username,
+          role,
         },
         {
           secret: this.configService.get<string>('JWT_ACCESS_SECRET'),
@@ -95,6 +98,7 @@ export class AuthService {
           email,
           fullName,
           username,
+          role,
         },
         {
           secret: this.configService.get<string>('JWT_REFRESH_SECRET'),
