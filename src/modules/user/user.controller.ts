@@ -8,17 +8,24 @@ import {
   Patch,
   UseGuards,
   Query,
+  UploadedFile,
+  UseInterceptors,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { AccessTokenGuard } from 'src/common/guards/accessToken.guard';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiConsumes, ApiTags } from '@nestjs/swagger';
+import { FirebaseService } from '../firebase/firebase.service';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @ApiTags('User')
 @Controller('user')
 export class UserController {
-  constructor(private readonly userService: UserService) {}
+  constructor(
+    private readonly userService: UserService,
+    private readonly firebaseService: FirebaseService,
+  ) {}
 
   @Post()
   create(@Body() createUserDto: CreateUserDto) {
@@ -27,7 +34,7 @@ export class UserController {
 
   @Get('email')
   findByEmail(@Query('email') email: string) {
-    return this.userService.findByEmail(email);
+    return this.userService.findByEmailNotPass(email);
   }
 
   @Get(':id')
@@ -53,4 +60,23 @@ export class UserController {
   // findAll() {
   //   return this.userService.findAll();
   // }
+  @Post('upload')
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    description: 'File/Image',
+    schema: {
+      type: 'object',
+      properties: {
+        file: {
+          type: 'string',
+          format: 'binary',
+        },
+      },
+    },
+  })
+  @UseInterceptors(FileInterceptor('file'))
+  async uploadFile(@UploadedFile() file: Express.Multer.File) {
+    const publicUrl = this.firebaseService.uploadFile(file);
+    return publicUrl;
+  }
 }

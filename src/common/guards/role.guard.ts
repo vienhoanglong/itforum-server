@@ -31,7 +31,6 @@ export class RoleGuard implements CanActivate {
       const decoded = this.jwtService.verify(accessToken, {
         secret: this.configService.get<string>('JWT_SECRET'),
       });
-      console.log(decoded);
       const userRole = decoded?.role;
       return roles.includes(userRole);
     } catch (err) {
