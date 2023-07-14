@@ -7,6 +7,7 @@ import { AccessTokenGuard } from 'src/common/guards/accessToken.guard';
 import { RefreshTokenGuard } from 'src/common/guards/refreshToken.guard';
 import { RoleGuard } from 'src/common/guards/role.guard';
 import { Roles } from 'src/common/decorator/role.decorator';
+import { AuthGuard } from '@nestjs/passport';
 @ApiTags('Auth')
 @Controller('auth')
 export class AuthController {
@@ -41,5 +42,18 @@ export class AuthController {
     const userId = req.user['sub'];
     const refreshToken = req.user['refreshToken'];
     return this.authService.refreshTokens(userId, refreshToken);
+  }
+
+  @Get('google')
+  @UseGuards(AuthGuard('google'))
+  async googleLogin() {
+    return 'Google login is in progress...';
+  }
+
+  @Get('google/callback')
+  @UseGuards(AuthGuard('google'))
+  async googleCallback(@Req() req: any) {
+    const user = await this.authService.validateOAuthLogin(req.user);
+    return user;
   }
 }
