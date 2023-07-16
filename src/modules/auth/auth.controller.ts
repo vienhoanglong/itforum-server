@@ -3,8 +3,8 @@ import { AuthService } from './auth.service';
 import { LoginDto, RegisterDto } from './auth.dto';
 import { Request } from 'express';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
-import { AccessTokenGuard } from 'src/common/guards/accessToken.guard';
-import { RefreshTokenGuard } from 'src/common/guards/refreshToken.guard';
+import { AccessTokenGuard } from 'src/common/guards/access-token.guard';
+import { RefreshTokenGuard } from 'src/common/guards/refresh-token.guard';
 import { RoleGuard } from 'src/common/guards/role.guard';
 import { Roles } from 'src/common/decorator/role.decorator';
 import { AuthGuard } from '@nestjs/passport';
@@ -46,14 +46,14 @@ export class AuthController {
 
   @Get('google')
   @UseGuards(AuthGuard('google'))
-  async googleLogin() {
+  googleLogin() {
     return 'Google login is in progress...';
   }
 
   @Get('google/callback')
   @UseGuards(AuthGuard('google'))
-  async googleCallback(@Req() req: any) {
-    const user = await this.authService.validateOAuthLogin(req.user);
+  googleCallback(@Req() req: any) {
+    const user = this.authService.validateOAuthLogin(req.user);
     return user;
   }
 }

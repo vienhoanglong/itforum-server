@@ -56,7 +56,6 @@ export class UserService {
       const createdUser = new this.userModel(userData);
       return createdUser.save();
     }
-
     return user;
   }
 }
