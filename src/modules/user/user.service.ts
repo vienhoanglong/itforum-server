@@ -18,6 +18,10 @@ export class UserService {
     return this.userModel.findOne({ email }).select('+password').exec();
   }
 
+  async findByEmailNotPass(email: string): Promise<UserDocument> {
+    return this.userModel.findOne({ email }).select('+password').exec();
+  }
+
   async findById(id: string): Promise<UserDocument> {
     return this.userModel.findById(id);
   }
@@ -38,4 +42,20 @@ export class UserService {
   // async findAll(): Promise<UserDocument[]> {
   //   return this.userModel.find().exec();
   // }
+
+  async findOne(payload: any): Promise<UserDocument> {
+    return this.userModel.findOne(payload).exec();
+  }
+
+  async findOrCreateUser(userData: Partial<User>): Promise<User> {
+    const user = await this.userModel
+      .findOne({ googleId: userData.googleId })
+      .exec();
+
+    if (!user) {
+      const createdUser = new this.userModel(userData);
+      return createdUser.save();
+    }
+    return user;
+  }
 }
