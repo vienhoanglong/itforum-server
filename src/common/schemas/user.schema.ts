@@ -67,6 +67,12 @@ export class User extends Document {
 
   @Prop()
   refreshToken?: string;
+
+  @Prop({
+    type: String,
+    default: 'white',
+  })
+  color: string;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
