@@ -7,9 +7,16 @@ import { UserModule } from './modules/user/user.module';
 import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core';
 import { HttpExceptionFilter } from './common/filters/http-exception.filter';
 import { ResponseInterceptor } from './common/interceptor/response.interceptor';
+import { TopicModule } from './modules/topic/topic.module';
 dotenv.config();
 @Module({
-  imports: [ConfigModule.forRoot(), DatabaseModule, AuthModule, UserModule],
+  imports: [
+    ConfigModule.forRoot(),
+    DatabaseModule,
+    AuthModule,
+    UserModule,
+    TopicModule,
+  ],
   providers: [
     {
       provide: APP_FILTER,
