@@ -14,10 +14,13 @@ import {
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { AccessTokenGuard } from 'src/common/guards/accessToken.guard';
+import { AccessTokenGuard } from 'src/common/guards/access-token.guard';
 import { ApiBearerAuth, ApiBody, ApiConsumes, ApiTags } from '@nestjs/swagger';
-import { FirebaseService } from '../firebase/firebase.service';
+import { FirebaseService } from '../lib/firebase/firebase.service';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { MailService } from '../lib/mail/mail.service';
+import { SendMailDTO } from './dto/send-mail.dto';
+import { templateVerificationEmail } from 'src/constants/helper';
 
 @ApiTags('User')
 @Controller('user')
@@ -25,6 +28,7 @@ export class UserController {
   constructor(
     private readonly userService: UserService,
     private readonly firebaseService: FirebaseService,
+    private readonly mailService: MailService,
   ) {}
 
   @Post()
@@ -75,8 +79,21 @@ export class UserController {
     },
   })
   @UseInterceptors(FileInterceptor('file'))
-  async uploadFile(@UploadedFile() file: Express.Multer.File) {
+  uploadFile(@UploadedFile() file: Express.Multer.File) {
     const publicUrl = this.firebaseService.uploadFile(file);
     return publicUrl;
+  }
+
+  @Post('send-otp')
+  sendOTP(@Body() sendMailDto: SendMailDTO) {
+    const html = templateVerificationEmail(
+      sendMailDto.content,
+      sendMailDto.otp,
+    );
+    return this.mailService.sendMail(
+      sendMailDto.email,
+      sendMailDto.subject,
+      html,
+    );
   }
 }

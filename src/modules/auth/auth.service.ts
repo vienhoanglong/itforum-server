@@ -1,13 +1,17 @@
 import {
   BadRequestException,
   ForbiddenException,
+  HttpException,
+  HttpStatus,
   Injectable,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { UserService } from '../user/user.service';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import * as argon2 from 'argon2';
 import { LoginDto, RegisterDto } from './auth.dto';
+
 @Injectable()
 export class AuthService {
   constructor(
@@ -130,5 +134,27 @@ export class AuthService {
     );
     await this.updateRefreshToken(user.id, tokens.refreshToken);
     return tokens;
+  }
+
+  async validateOAuthLogin(profile: any): Promise<any> {
+    try {
+      const { id, displayName, emails, _json } = profile;
+      if (_json?.hd !== 'student.tdtu.edu.vn') {
+        throw new HttpException(
+          'Only the email extension @student.tdtu.edu.vn is accepted',
+          HttpStatus.UNAUTHORIZED,
+        );
+      }
+      const user = await this.userService.findOrCreateUser({
+        googleId: id,
+        fullName: displayName,
+        email: emails[0].value,
+      });
+      return { user };
+    } catch (error) {
+      throw new UnauthorizedException({
+        message: `OAuth login error: ${error.message}`,
+      });
+    }
   }
 }
