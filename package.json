@@ -22,7 +22,7 @@
   },
   "dependencies": {
     "@firebase/storage": "^0.11.2",
-    "@google-cloud/storage": "^6.11.0",
+    "@google-cloud/storage": "^6.12.0",
     "@nestjs/common": "^9.0.0",
     "@nestjs/config": "^2.3.4",
     "@nestjs/core": "^9.0.0",
