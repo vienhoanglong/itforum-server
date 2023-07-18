@@ -36,6 +36,11 @@ export class UserController {
     return this.userService.create(createUserDto);
   }
 
+  @Get('list-avatar')
+  listAvatar() {
+    return this.firebaseService.getListAvatar();
+  }
+
   @Get('email')
   findByEmail(@Query('email') email: string) {
     return this.userService.findByEmailNotPass(email);
