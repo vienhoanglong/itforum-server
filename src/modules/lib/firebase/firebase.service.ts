@@ -1,10 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import * as admin from 'firebase-admin';
 import { FirebaseConfigService } from 'src/config/firebase.config';
+import { Bucket, File } from '@google-cloud/storage';
 @Injectable()
 export class FirebaseService {
   private storage: admin.storage.Storage;
-
+  private bucket: Bucket;
   constructor(private firebaseConfigService: FirebaseConfigService) {
     const firebaseConfig = this.firebaseConfigService.getFirebaseConfig();
     admin.initializeApp({
@@ -13,6 +14,7 @@ export class FirebaseService {
     });
 
     this.storage = admin.storage();
+    this.bucket = this.storage.bucket();
   }
   async uploadFile(file: Express.Multer.File): Promise<object> {
     const storageBucket = this.storage.bucket();
@@ -32,5 +34,30 @@ export class FirebaseService {
       expires: '03-01-2500', // Adjust the expiration date as needed
     });
     return { link: downloadUrl.toString() };
+  }
+
+  async getListAvatar(): Promise<object> {
+    const [files] = await this.bucket.getFiles({ prefix: 'avatars' });
+    const fileList = files
+      .filter((file: File) => {
+        const metadata = file.metadata;
+        return (
+          metadata.contentType !== undefined &&
+          metadata.contentType.startsWith('image/')
+        );
+      })
+      .map(async (file: File) => {
+        const [url] = await file.getSignedUrl({
+          action: 'read',
+          expires: '03-01-2500', // Adjust the expiration date as needed
+        });
+
+        return {
+          name: file.name,
+          url: url,
+        };
+      });
+
+    return Promise.all(fileList);
   }
 }
