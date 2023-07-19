@@ -80,4 +80,14 @@ export class DiscussService {
     }
     return 'Remove discuss successfully';
   }
+
+  async incrementTotalView(id: string): Promise<number> {
+    const updatedDiscuss = await this.discussModel
+      .findByIdAndUpdate(id, { $inc: { totalView: 1 } }, { new: true })
+      .exec();
+    if (!updatedDiscuss) {
+      throw new NotFoundException('Discuss not found');
+    }
+    return updatedDiscuss.totalView;
+  }
 }

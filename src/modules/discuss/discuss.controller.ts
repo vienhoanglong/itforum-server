@@ -46,7 +46,7 @@ export class DiscussController {
     type: DiscussSerialization,
     description: 'Update discuss success',
   })
-  @ApiOperation({ summary: 'Update discuss by id' })
+  @ApiOperation({ summary: 'Update discuss by discussId' })
   updateDiscuss(
     @Param('id') id: string,
     @Body() updateDiscussDTO: UpdateDiscussDTO,
@@ -91,5 +91,17 @@ export class DiscussController {
   @ApiOperation({ summary: 'Remove discuss' })
   removeDiscuss(@Param('id') id: string) {
     return this.discussService.removeDiscuss(id);
+  }
+
+  @Get(':id/increment-view')
+  @ApiResponse({
+    status: HttpStatus.OK,
+    type: Object,
+    description: 'Increment view success',
+  })
+  @ApiOperation({ summary: 'Increment view discuss by discussId' })
+  async incrementTotalView(@Param('id') id: string) {
+    const updatedDiscuss = await this.discussService.incrementTotalView(id);
+    return { totalView: updatedDiscuss };
   }
 }
