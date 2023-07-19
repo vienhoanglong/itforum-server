@@ -8,6 +8,7 @@ import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core';
 import { HttpExceptionFilter } from './common/filters/http-exception.filter';
 import { ResponseInterceptor } from './common/interceptor/response.interceptor';
 import { TopicModule } from './modules/topic/topic.module';
+import { DiscussModule } from './modules/discuss/discuss.module';
 dotenv.config();
 @Module({
   imports: [
@@ -16,6 +17,7 @@ dotenv.config();
     AuthModule,
     UserModule,
     TopicModule,
+    DiscussModule,
   ],
   providers: [
     {
