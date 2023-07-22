@@ -29,11 +29,6 @@ export class Comment extends Document {
 
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Comment' })
   commentParentId: Comment;
-
-  @Prop({
-    default: false,
-  })
-  isDeleted: boolean;
 }
 
 export const CommentSchema = SchemaFactory.createForClass(Comment);
