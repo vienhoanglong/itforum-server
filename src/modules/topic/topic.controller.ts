@@ -12,8 +12,12 @@ import {
 } from '@nestjs/common';
 import { TopicService } from './topic.service';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { CreateTopicDTO, HideTopicDTO, UpdateTopicDTO } from './dto';
-import { ITopic } from './interface';
+import {
+  CreateTopicDTO,
+  FindTypeTopicDTO,
+  HideTopicDTO,
+  UpdateTopicDTO,
+} from './dto';
 import { TopicSerialization } from './serialization';
 @ApiTags('Topic')
 @Controller('topic')
@@ -26,8 +30,19 @@ export class TopicController {
     description: 'Get list topic success',
   })
   @ApiOperation({ summary: 'Get list topic' })
-  findAll(): Promise<ITopic[]> {
+  findAll() {
     return this.topicService.findAll();
+  }
+
+  @Get('/find-by-type')
+  @ApiResponse({
+    status: HttpStatus.OK,
+    type: [TopicSerialization],
+    description: 'Find topics by type success',
+  })
+  @ApiOperation({ summary: 'Find topics by type' })
+  findTopicsByType(@Query() findTypeTopicDTO: FindTypeTopicDTO) {
+    return this.topicService.findTopicsByType(findTypeTopicDTO.type);
   }
 
   @Get(':id')
