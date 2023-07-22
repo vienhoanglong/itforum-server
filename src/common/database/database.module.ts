@@ -6,6 +6,7 @@ import * as dotenv from 'dotenv';
 import { User, UserSchema } from '../schemas/user.schema';
 import { Topic, TopicSchema } from '../schemas/topic.schema';
 import { Discuss, DiscussSchema } from '../schemas/discuss.schema';
+import { CommentSchema, Comment } from '../schemas/comment.schema';
 
 dotenv.config();
 @Module({
@@ -25,6 +26,7 @@ dotenv.config();
       { name: User.name, schema: UserSchema },
       { name: Topic.name, schema: TopicSchema },
       { name: Discuss.name, schema: DiscussSchema },
+      { name: Comment.name, schema: CommentSchema },
       //Add more...
     ]),
   ],

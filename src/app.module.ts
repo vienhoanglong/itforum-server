@@ -9,6 +9,7 @@ import { HttpExceptionFilter } from './common/filters/http-exception.filter';
 import { ResponseInterceptor } from './common/interceptor/response.interceptor';
 import { TopicModule } from './modules/topic/topic.module';
 import { DiscussModule } from './modules/discuss/discuss.module';
+import { CommentModule } from './modules/comment/comment.module';
 dotenv.config();
 @Module({
   imports: [
@@ -18,6 +19,7 @@ dotenv.config();
     UserModule,
     TopicModule,
     DiscussModule,
+    CommentModule,
   ],
   providers: [
     {
