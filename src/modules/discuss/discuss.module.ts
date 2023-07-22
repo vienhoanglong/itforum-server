@@ -7,5 +7,6 @@ import { DiscussService } from './discuss.service';
   imports: [DatabaseModule],
   controllers: [DiscussController],
   providers: [DiscussService],
+  exports: [DiscussService],
 })
 export class DiscussModule {}
