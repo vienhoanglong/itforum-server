@@ -8,7 +8,18 @@ export class Topic extends Document {
   name: string;
   @Prop()
   desc: string;
-  @Prop()
+  @Prop({
+    enum: [
+      'DevOps',
+      'Frameworks',
+      'Languages',
+      'Techniques',
+      'Testing',
+      'Tooling',
+      'Subject',
+    ],
+    type: String,
+  })
   type: string;
   @Prop()
   color: string;
