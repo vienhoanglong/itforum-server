@@ -90,4 +90,17 @@ export class DiscussService {
     }
     return updatedDiscuss.totalView;
   }
+  async getDiscussBySlug(slug: string): Promise<Discuss> {
+    const discuss = await this.discussModel
+      .findOne({ slug, isDraft: true }) //only get draft equal true
+      .exec();
+    if (!discuss) {
+      throw new NotFoundException('Discuss not found');
+    }
+    return discuss;
+  }
+
+  async getDiscussesOnTrash(): Promise<Discuss[]> {
+    return await this.discussModel.find({ isDraft: false }).exec();
+  }
 }
