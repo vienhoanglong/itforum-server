@@ -18,6 +18,30 @@ import { DiscussSerialization } from './serialization';
 export class DiscussController {
   constructor(private readonly discussService: DiscussService) {}
 
+  @Get('slug/:slug')
+  @ApiResponse({
+    status: HttpStatus.OK,
+    type: DiscussSerialization,
+    description: 'Get discuss by slug success',
+  })
+  @ApiOperation({ summary: 'Get discuss by slug' })
+  getDiscussionBySlug(@Param('slug') slug: string) {
+    return this.discussService.getDiscussBySlug(slug);
+  }
+
+  @Get('trash')
+  @ApiResponse({
+    status: HttpStatus.OK,
+    type: [DiscussSerialization],
+    description: 'Get discusses from the trash success',
+  })
+  @ApiOperation({
+    summary: 'Get discusses from the trash with isDraft set to false',
+  })
+  async getDiscussesOnTrash() {
+    return this.discussService.getDiscussesOnTrash();
+  }
+
   @Get(':id')
   @ApiResponse({
     status: HttpStatus.OK,
