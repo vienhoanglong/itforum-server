@@ -7,6 +7,7 @@ import { User, UserSchema } from '../schemas/user.schema';
 import { Topic, TopicSchema } from '../schemas/topic.schema';
 import { Discuss, DiscussSchema } from '../schemas/discuss.schema';
 import { CommentSchema, Comment } from '../schemas/comment.schema';
+import { GroupChat, GroupChatSchema } from '../schemas/group-chat.schema';
 
 dotenv.config();
 @Module({
@@ -27,6 +28,7 @@ dotenv.config();
       { name: Topic.name, schema: TopicSchema },
       { name: Discuss.name, schema: DiscussSchema },
       { name: Comment.name, schema: CommentSchema },
+      { name: GroupChat.name, schema: GroupChatSchema },
       //Add more...
     ]),
   ],
