@@ -27,3 +27,14 @@ export class RegisterDto {
   @MinLength(8)
   password: string;
 }
+
+export class LoginGoogleDTO {
+  @ApiProperty()
+  sub: string;
+  @ApiProperty()
+  email: string;
+  @ApiProperty()
+  name: string;
+  @ApiProperty()
+  picture: string;
+}
