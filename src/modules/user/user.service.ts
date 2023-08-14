@@ -4,7 +4,6 @@ import { User, UserDocument } from 'src/common/schemas/user.schema';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { UpdateUserDto } from './dto/update-user.dto';
-
 @Injectable()
 export class UserService {
   constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) {}
@@ -48,9 +47,7 @@ export class UserService {
   }
 
   async findOrCreateUser(userData: Partial<User>): Promise<User> {
-    const user = await this.userModel
-      .findOne({ googleId: userData.googleId })
-      .exec();
+    const user = await this.userModel.findOne({ email: userData.email }).exec();
 
     if (!user) {
       const createdUser = new this.userModel(userData);
