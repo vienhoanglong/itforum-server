@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document } from 'mongoose';
+import mongoose, { Document } from 'mongoose';
 
 export type UserDocument = User & Document;
 @Schema({ timestamps: true })
@@ -64,6 +64,21 @@ export class User extends Document {
 
   @Prop()
   phoneNumber?: string;
+
+  @Prop()
+  birthDay?: string;
+
+  @Prop()
+  class?: string;
+
+  @Prop()
+  major?: string;
+
+  @Prop({ type: [{ type: mongoose.Types.ObjectId, ref: 'Topic' }] })
+  skill?: mongoose.Types.ObjectId[];
+
+  @Prop()
+  contact?: object[];
 
   @Prop()
   refreshToken?: string;
