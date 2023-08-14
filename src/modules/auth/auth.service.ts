@@ -141,6 +141,7 @@ export class AuthService {
         googleId: sub,
         email,
         fullName: name,
+        username: name,
         avatar: picture,
         role: 2,
       });
