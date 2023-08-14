@@ -2,16 +2,17 @@ import { ApiProperty, ApiPropertyOptional, PartialType } from '@nestjs/swagger';
 import { CreateUserDto } from './create-user.dto';
 import { IsString, ValidateNested } from 'class-validator';
 import { Transform, Type } from 'class-transformer';
-export class ContactDto {
+export class LinksDto {
+  @ApiProperty({ type: 'string' })
+  id: string;
   @ApiProperty({ type: 'string' })
   name: string;
   @ApiProperty({ type: 'string' })
   link: string;
 }
-
 export class UpdateUserDto extends PartialType(CreateUserDto) {
   @ApiPropertyOptional()
-  birthDay?: string;
+  birthDay?: Date;
   @ApiPropertyOptional()
   class?: string;
   @ApiPropertyOptional()
@@ -20,8 +21,10 @@ export class UpdateUserDto extends PartialType(CreateUserDto) {
   @Transform(({ value }) => (Array.isArray(value) ? value : [value]))
   @IsString({ each: true })
   skill?: string[];
-  @ApiPropertyOptional({ type: [ContactDto] })
+  @ApiPropertyOptional({ type: [LinksDto] })
   @ValidateNested()
-  @Type(() => ContactDto)
-  contact?: ContactDto[];
+  @Type(() => LinksDto)
+  links?: LinksDto[];
+  @ApiPropertyOptional()
+  address?: string;
 }
