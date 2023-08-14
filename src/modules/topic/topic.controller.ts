@@ -14,6 +14,7 @@ import { TopicService } from './topic.service';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import {
   CreateTopicDTO,
+  FindTopicsByListIdDto,
   FindTypeTopicDTO,
   HideTopicDTO,
   UpdateTopicDTO,
@@ -34,6 +35,16 @@ export class TopicController {
     return this.topicService.findAll();
   }
 
+  @Get('/list-topic')
+  @ApiResponse({
+    status: HttpStatus.OK,
+    type: [TopicSerialization],
+    description: 'Get list topic by list topicId success',
+  })
+  @ApiOperation({ summary: 'Get list topic by list topicId' })
+  getListTopicByListId(@Query() findTopicsByListIdDto: FindTopicsByListIdDto) {
+    return this.topicService.getListTopicByListId(findTopicsByListIdDto.listId);
+  }
   @Get('/find-by-type')
   @ApiResponse({
     status: HttpStatus.OK,
