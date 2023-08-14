@@ -45,8 +45,13 @@ export class TopicService {
     return topics;
   }
 
-  async getListTopicByListId(listId: string[]): Promise<Topic[]> {
-    const topics = await this.topicModel.find({ _id: { $in: listId } });
+  async getListTopicByListId(listId: string): Promise<any> {
+    const idList = listId.split(',').map((id) => id.trim());
+    const topics = await this.topicModel
+      .find({
+        _id: { $in: idList },
+      })
+      .exec();
     if (topics.length < 0) {
       return [];
     }
