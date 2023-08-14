@@ -1,8 +1,6 @@
 import {
   BadRequestException,
   ForbiddenException,
-  HttpException,
-  HttpStatus,
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
@@ -54,7 +52,7 @@ export class AuthService {
     if (!passwordMatches)
       throw new BadRequestException('Password is incorrect');
     const tokens = await this.getTokens(
-      user.id,
+      user._id,
       user.email,
       user.fullName,
       user.username,
@@ -136,21 +134,25 @@ export class AuthService {
     return tokens;
   }
 
-  async validateOAuthLogin(profile: any): Promise<any> {
+  async checkLoginWithGoogle(payload: any): Promise<any> {
     try {
-      const { id, displayName, emails, _json } = profile;
-      if (_json?.hd !== 'student.tdtu.edu.vn') {
-        throw new HttpException(
-          'Only the email extension @student.tdtu.edu.vn is accepted',
-          HttpStatus.UNAUTHORIZED,
-        );
-      }
+      const { email, name, sub, picture } = payload;
       const user = await this.userService.findOrCreateUser({
-        googleId: id,
-        fullName: displayName,
-        email: emails[0].value,
+        googleId: sub,
+        email,
+        fullName: name,
+        avatar: picture,
+        role: 2,
       });
-      return { user };
+      const tokens = await this.getTokens(
+        user._id,
+        user.email,
+        user.fullName,
+        user.username,
+        user.role,
+      );
+      await this.updateRefreshToken(user._id, tokens.refreshToken);
+      return tokens;
     } catch (error) {
       throw new UnauthorizedException({
         message: `OAuth login error: ${error.message}`,
