@@ -46,7 +46,7 @@ export class User extends Document {
 
   @Prop({
     type: String,
-    default: 'Nam',
+    default: '',
   })
   gender: string;
 
@@ -66,7 +66,7 @@ export class User extends Document {
   phoneNumber?: string;
 
   @Prop()
-  birthDay?: string;
+  birthDay?: Date;
 
   @Prop()
   class?: string;
@@ -78,9 +78,6 @@ export class User extends Document {
   skill?: mongoose.Types.ObjectId[];
 
   @Prop()
-  contact?: object[];
-
-  @Prop()
   refreshToken?: string;
 
   @Prop({
@@ -88,6 +85,12 @@ export class User extends Document {
     default: 'white',
   })
   color: string;
+
+  @Prop()
+  links?: object[];
+
+  @Prop()
+  address?: string;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
