@@ -2,6 +2,7 @@ import {
   BadRequestException,
   ForbiddenException,
   Injectable,
+  NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
 import { UserService } from '../user/user.service';
@@ -9,6 +10,8 @@ import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import * as argon2 from 'argon2';
 import { LoginDto, RegisterDto } from './auth.dto';
+import generateOTP, { templateVerificationEmail } from 'src/constants/helper';
+import { MailService } from '../lib/mail/mail.service';
 
 @Injectable()
 export class AuthService {
@@ -16,6 +19,7 @@ export class AuthService {
     private userService: UserService,
     private jwtService: JwtService,
     private configService: ConfigService,
+    private mailService: MailService,
   ) {}
   hashData(data: string) {
     return argon2.hash(data);
@@ -159,5 +163,49 @@ export class AuthService {
         message: `OAuth login error: ${error.message}`,
       });
     }
+  }
+
+  async sendOTP(email: string): Promise<any> {
+    const user = await this.userService.findByEmail(email);
+    if (!user) throw new NotFoundException('User not found');
+    const opt = generateOTP(6);
+    const addOtp = await this.userService.addOtp(email, opt);
+    if (!addOtp) throw new NotFoundException('Add OTP not found');
+    const html = templateVerificationEmail('Mã xác thực', opt);
+    return this.mailService.sendMail(email, 'Mã xác thực', html);
+  }
+
+  async verifyOTP(email: string, otp: string): Promise<boolean> {
+    const user = await this.userService.findOne({
+      email,
+      otp,
+      expiresOtp: { $gte: new Date() },
+    });
+    if (!user) throw new NotFoundException('Invalid or expired OTP');
+    await this.userService.removeField(email, {
+      otp: '',
+      expiresOtp: '',
+    });
+    return true;
+  }
+
+  async changePassword(
+    email: string,
+    password: string,
+    repeatPassword: string,
+  ): Promise<boolean> {
+    if (password !== repeatPassword) {
+      throw new BadRequestException(
+        'New password and repeat password do not match',
+      );
+    }
+    const user = await this.userService.findOne({ email });
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+    const hashedPassword = await this.hashData(password);
+    user.password = hashedPassword;
+    await user.save();
+    return true;
   }
 }

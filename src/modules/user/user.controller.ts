@@ -21,6 +21,8 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { MailService } from '../lib/mail/mail.service';
 import { SendMailDTO } from './dto/send-mail.dto';
 import { templateVerificationEmail } from 'src/constants/helper';
+import { RoleGuard } from 'src/common/guards/role.guard';
+import { Roles } from 'src/common/decorator/role.decorator';
 
 @ApiTags('User')
 @Controller('user')
@@ -45,7 +47,13 @@ export class UserController {
   findByEmail(@Query('email') email: string) {
     return this.userService.findByEmailNotPass(email);
   }
-
+  @UseGuards(RoleGuard)
+  @Roles(0)
+  @ApiBearerAuth()
+  @Get('resetPassword/:id')
+  resetPassword(@Query('id') id: string) {
+    return this.userService.resetPassword(id);
+  }
   @Get(':id')
   findById(@Param('id') id: string) {
     return this.userService.findById(id);

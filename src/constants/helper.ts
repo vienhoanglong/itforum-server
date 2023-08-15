@@ -25,3 +25,12 @@ export const templateVerificationEmail = (content: string, otp: string) => {
     </body>
     </html>`;
 };
+
+export default function generateOTP(limit = 6): string {
+  const digits = '0123456789';
+  let OTP = '';
+  for (let i = 0; i < limit; i++) {
+    OTP += digits[Math.floor(Math.random() * 10)];
+  }
+  return OTP;
+}
