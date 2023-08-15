@@ -10,13 +10,13 @@ export class Topic extends Document {
   desc: string;
   @Prop({
     enum: [
-      'DevOps',
-      'Frameworks',
-      'Languages',
-      'Techniques',
-      'Testing',
-      'Tooling',
-      'Subject',
+      'devOps',
+      'frameworks',
+      'languages',
+      'techniques',
+      'testing',
+      'tooling',
+      'subject',
     ],
     type: String,
   })
@@ -26,7 +26,10 @@ export class Topic extends Document {
   @Prop({
     default: false,
   })
+  @Prop()
   hide: boolean;
+  @Prop()
+  img: string;
 }
 
 export const TopicSchema = SchemaFactory.createForClass(Topic);
