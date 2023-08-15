@@ -33,6 +33,14 @@ export class UserController {
     private readonly mailService: MailService,
   ) {}
 
+  @UseGuards(RoleGuard)
+  @Roles(0)
+  @ApiBearerAuth()
+  @Get('all-users')
+  findAll() {
+    return this.userService.findAll();
+  }
+
   @Post()
   create(@Body() createUserDto: CreateUserDto) {
     return this.userService.create(createUserDto);
@@ -50,7 +58,7 @@ export class UserController {
   @UseGuards(RoleGuard)
   @Roles(0)
   @ApiBearerAuth()
-  @Get('resetPassword/:id')
+  @Get('reset-password/:id')
   resetPassword(@Query('id') id: string) {
     return this.userService.resetPassword(id);
   }
@@ -73,10 +81,6 @@ export class UserController {
     return this.userService.remove(id);
   }
 
-  // @Get()
-  // findAll() {
-  //   return this.userService.findAll();
-  // }
   @Post('upload')
   @ApiConsumes('multipart/form-data')
   @ApiBody({

@@ -39,9 +39,9 @@ export class UserService {
     return this.userModel.findByIdAndDelete(id).exec();
   }
 
-  // async findAll(): Promise<UserDocument[]> {
-  //   return this.userModel.find().exec();
-  // }
+  async findAll(): Promise<User[]> {
+    return this.userModel.find().exec();
+  }
 
   async findOne(payload: any): Promise<UserDocument> {
     return this.userModel.findOne(payload).exec();
