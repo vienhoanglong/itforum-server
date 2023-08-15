@@ -27,4 +27,6 @@ export class UpdateUserDto extends PartialType(CreateUserDto) {
   links?: LinksDto[];
   @ApiPropertyOptional()
   address?: string;
+  @ApiPropertyOptional()
+  coverImg?: string;
 }

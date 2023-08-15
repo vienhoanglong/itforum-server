@@ -99,6 +99,9 @@ export class User extends Document {
 
   @Prop()
   expiresOtp?: Date;
+
+  @Prop()
+  coverImg?: string;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
