@@ -3,13 +3,13 @@ import { ApiProperty } from '@nestjs/swagger';
 export class FindTypeTopicDTO {
   @ApiProperty({
     enum: [
-      'DevOps',
-      'Frameworks',
-      'Languages',
-      'Techniques',
-      'Testing',
-      'Tooling',
-      'Subject',
+      'devOps',
+      'frameworks',
+      'languages',
+      'techniques',
+      'testing',
+      'tooling',
+      'subject',
     ],
   })
   type: string;

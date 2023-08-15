@@ -14,4 +14,7 @@ export class CreateTopicDTO {
   @ApiProperty()
   @IsString()
   color: string;
+  @ApiProperty()
+  @IsString()
+  img: string;
 }

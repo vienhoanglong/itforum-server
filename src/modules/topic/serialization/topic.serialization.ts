@@ -12,4 +12,6 @@ export class TopicSerialization implements ITopic {
   color: string;
   @ApiProperty({ type: 'boolean' })
   hide?: boolean;
+  @ApiProperty({ type: 'string' })
+  img: string;
 }
