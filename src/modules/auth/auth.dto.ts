@@ -38,3 +38,19 @@ export class LoginGoogleDTO {
   @ApiProperty()
   picture: string;
 }
+
+export class VerifyOtpDto {
+  @ApiProperty()
+  email: string;
+  @ApiProperty()
+  otp: string;
+}
+
+export class ChangePasswordDto {
+  @ApiProperty()
+  email: string;
+  @ApiProperty()
+  password: string;
+  @ApiProperty()
+  repeatPassword: string;
+}

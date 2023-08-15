@@ -8,6 +8,7 @@ import { RefreshTokenStrategy } from '../../common/strategy/refresh-token.strate
 import { UserModule } from '../user/user.module';
 import { PassportModule } from '@nestjs/passport';
 import { GoogleStrategy } from 'src/common/strategy/google.strategy';
+import { MailModule } from '../lib/mail/mail.module';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { GoogleStrategy } from 'src/common/strategy/google.strategy';
     JwtModule.register({}),
     UserModule,
     PassportModule.register({ defaultStrategy: 'google' }),
+    MailModule,
   ],
   controllers: [AuthController],
   providers: [

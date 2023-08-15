@@ -1,9 +1,10 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { User, UserDocument } from 'src/common/schemas/user.schema';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { UpdateUserDto } from './dto/update-user.dto';
+import * as argon2 from 'argon2';
 @Injectable()
 export class UserService {
   constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) {}
@@ -54,5 +55,41 @@ export class UserService {
       return createdUser.save();
     }
     return user;
+  }
+
+  hashData(data: string) {
+    return argon2.hash(data);
+  }
+
+  async resetPassword(id: string): Promise<string> {
+    const user = await this.userModel.findById(id);
+    if (!user) throw new NotFoundException('User not found');
+    const passwordReset = await this.hashData(
+      user.username ?? (user.email.split('@')[0] || ''),
+    );
+    const userReset = await this.userModel.updateOne(
+      { email: user.email },
+      { password: passwordReset },
+    );
+    if (!userReset) throw new NotFoundException('Reset password failed');
+    return `Reset password for user with id ${id} successfully`;
+  }
+
+  async addOtp(email: string, otp: string): Promise<string> {
+    const user = await this.userModel.updateOne(
+      { email },
+      { otp, expiresOtp: new Date(Date.now() + 60000 * 5) },
+    );
+    if (!user) throw new NotFoundException('User not found');
+    return 'Add OTP successfully';
+  }
+
+  async removeField(email: string, payload: any): Promise<boolean> {
+    const user = await this.userModel.updateOne({ email }, { $unset: payload });
+    if (!user) throw new NotFoundException('User not found');
+    return true;
+  }
+  async findOneAndDelete(payload: any): Promise<UserDocument> {
+    return this.userModel.findOneAndDelete(payload).exec();
   }
 }

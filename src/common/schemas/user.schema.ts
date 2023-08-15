@@ -91,6 +91,14 @@ export class User extends Document {
 
   @Prop()
   address?: string;
+
+  @Prop({
+    type: String,
+  })
+  otp?: string;
+
+  @Prop()
+  expiresOtp?: Date;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
