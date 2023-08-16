@@ -1,6 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { Document } from 'mongoose';
-import { Topic } from './topic.schema';
 import slugify from 'slugify';
 import { User } from './user.schema';
 
@@ -15,8 +14,8 @@ export class Discuss extends Document {
   createBy: User;
   @Prop({ type: Number, default: 0 })
   totalView: number;
-  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Topic' })
-  topic: Topic[];
+  @Prop({ type: [{ type: mongoose.Types.ObjectId, ref: 'Topic' }] })
+  topic?: mongoose.Types.ObjectId[];
   @Prop()
   slug: string;
   @Prop({ type: Boolean, default: true, index: true, select: false })

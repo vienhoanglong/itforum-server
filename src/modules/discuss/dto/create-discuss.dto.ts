@@ -12,7 +12,7 @@ export class CreateDiscussDTO {
   @ApiProperty({ type: String })
   createBy: string;
 
-  @ApiProperty({ type: String, isArray: true })
+  @ApiProperty({ type: [String], isArray: true })
   @Transform(({ value }) => (Array.isArray(value) ? value : [value]))
   @IsString({ each: true })
   topic: string[];
