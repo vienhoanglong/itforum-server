@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Topic, TopicDocument } from 'src/common/schemas/topic.schema';
@@ -40,7 +40,7 @@ export class TopicService {
   async findTopicsByType(type: string): Promise<Topic[]> {
     const topics = await this.topicModel.find({ type }).exec();
     if (!topics || topics.length === 0) {
-      throw new NotFoundException('No topics found for the specified type');
+      return [];
     }
     return topics;
   }

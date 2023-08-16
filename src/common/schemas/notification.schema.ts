@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { Document } from 'mongoose';
-
+export type NotificationDocument = Notification & Document;
 @Schema()
 export class Notification extends Document {
   @Prop()
@@ -10,13 +10,29 @@ export class Notification extends Document {
   descNotice: string;
 
   @Prop({ type: mongoose.Types.ObjectId, ref: 'User' })
-  createdBy: mongoose.Types.ObjectId;
+  createdBy?: mongoose.Types.ObjectId;
 
   @Prop({ default: Date.now })
   createdAt: Date;
 
-  @Prop({ enum: [0, 1] }) //0: Admin notice for users, 1: Notification for discuss and articles posted
-  typeNotice: number;
+  @Prop({
+    enum: ['recruitment', 'event', 'subject', 'other'],
+    type: String,
+    default: 'other',
+  })
+  typeNotice: string;
+
+  @Prop()
+  file?: string;
+
+  @Prop({ default: 'normal' })
+  level?: string;
+
+  @Prop({ default: true })
+  isPublished?: boolean;
+
+  @Prop({ default: false })
+  isDeleted?: boolean;
 }
 
 export const NotificationSchema = SchemaFactory.createForClass(Notification);
