@@ -103,7 +103,13 @@ export class CommentService {
 
     if (!comments.length)
       throw new NotFoundException('Not found comment for discuss');
-
+    for (const comment of comments) {
+      const childrenCount = await this.commentModel.countDocuments({
+        discussId: this.utilService.convertToObjectId(discussId),
+        commentParentId: comment._id,
+      });
+      comment.countChildComments = childrenCount;
+    }
     return comments;
   }
 

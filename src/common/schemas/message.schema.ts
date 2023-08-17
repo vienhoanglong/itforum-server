@@ -22,51 +22,27 @@ export const FileSchema = SchemaFactory.createForClass(File);
 export type CommentDocument = Comment & Document;
 @Schema({ timestamps: true })
 export class Comment extends Document {
-  @Prop({ type: mongoose.Types.ObjectId, index: true, ref: 'GroupChat' })
-  idChat: mongoose.Types.ObjectId;
+  @Prop({ type: String })
+  contentMessage: string;
+
+  @Prop({ type: mongoose.Types.ObjectId, ref: 'Conversation' })
+  conversationId: mongoose.Types.ObjectId;
 
   @Prop({ type: mongoose.Types.ObjectId, ref: 'User' })
-  authorID: mongoose.Types.ObjectId;
-
-  @Prop()
-  title: string;
-
-  @Prop({
-    id: { type: mongoose.Types.ObjectId, ref: 'Message' },
-    title: String,
-    file: FileSchema,
-  })
-  replyMessage: {
-    id: mongoose.Types.ObjectId;
-    title: string;
-    file: FileDocument;
-  };
-
-  @Prop({
-    type: [
-      { id: { type: mongoose.Types.ObjectId, ref: 'User' }, seenAt: String },
-    ],
-  })
-  seen: { id: mongoose.Types.ObjectId; seenAt: string }[];
-
-  @Prop({ type: [{ type: mongoose.Types.ObjectId, ref: 'User' }] })
-  tagName: mongoose.Types.ObjectId[];
+  senderId: mongoose.Types.ObjectId;
 
   @Prop({
     type: [
       {
-        idUser: { type: mongoose.Types.ObjectId, ref: 'User' },
-        type_emotion: String,
+        userId: { type: mongoose.Types.ObjectId, ref: 'User' },
+        typeEmotion: String,
       },
     ],
   })
-  reactionMess: { idUser: mongoose.Types.ObjectId; type_emotion: string }[];
+  reactionMessage: { userId: mongoose.Types.ObjectId; typeEmotion: string }[];
 
   @Prop({ default: 'text' })
-  type_mess: string;
-
-  @Prop({ type: [FileSchema] })
-  file: FileDocument[];
+  typeMessage: string;
 }
 
 export const CommentSchema = SchemaFactory.createForClass(Comment);
