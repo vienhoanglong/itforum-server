@@ -1,11 +1,11 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document } from 'mongoose';
+import mongoose, { Document } from 'mongoose';
 
 export type ConversationDocument = Conversation & Document;
 @Schema({ timestamps: true })
 export class Conversation extends Document {
-  @Prop({ type: [String] })
-  members: string[];
+  @Prop({ type: [{ type: mongoose.Types.ObjectId, ref: 'User' }] })
+  members?: mongoose.Types.ObjectId[];
   @Prop({ type: String })
   nameConversation?: string;
   @Prop({ type: String })

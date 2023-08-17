@@ -12,6 +12,7 @@ import { DiscussModule } from './modules/discuss/discuss.module';
 import { CommentModule } from './modules/comment/comment.module';
 import { GroupChatModule } from './modules/chat/group-chat/group-chat.module';
 import { NotificationModule } from './modules/notification/notification.module';
+import { ConversationModule } from './modules/chat/conversation/conversation.module';
 dotenv.config();
 @Module({
   imports: [
@@ -24,6 +25,7 @@ dotenv.config();
     CommentModule,
     GroupChatModule,
     NotificationModule,
+    ConversationModule,
   ],
   providers: [
     {
