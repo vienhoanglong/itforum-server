@@ -12,6 +12,10 @@ import {
   Notification,
   NotificationSchema,
 } from '../schemas/notification.schema';
+import {
+  Conversation,
+  ConversationSchema,
+} from '../schemas/conversation.schema';
 
 dotenv.config();
 @Module({
@@ -34,6 +38,7 @@ dotenv.config();
       { name: Comment.name, schema: CommentSchema },
       { name: GroupChat.name, schema: GroupChatSchema },
       { name: Notification.name, schema: NotificationSchema },
+      { name: Conversation.name, schema: ConversationSchema },
 
       //Add more...
     ]),
