@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { User, UserDocument } from 'src/common/schemas/user.schema';
 import { Model } from 'mongoose';
@@ -91,5 +95,25 @@ export class UserService {
   }
   async findOneAndDelete(payload: any): Promise<UserDocument> {
     return this.userModel.findOneAndDelete(payload).exec();
+  }
+
+  async getListUserByListId(listUserId: string): Promise<User[]> {
+    try {
+      const idList = listUserId.split(',').map((id) => id.trim());
+      const users = await this.userModel
+        .find(
+          {
+            _id: { $in: idList },
+          },
+          { username: 1, fullName: 1, email: 1, color: 1, avatar: 1 },
+        )
+        .exec();
+      if (users.length < 0) {
+        return [];
+      }
+      return users;
+    } catch (error) {
+      throw new BadRequestException(error);
+    }
   }
 }
