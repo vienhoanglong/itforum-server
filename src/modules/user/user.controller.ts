@@ -15,7 +15,13 @@ import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { AccessTokenGuard } from 'src/common/guards/access-token.guard';
-import { ApiBearerAuth, ApiBody, ApiConsumes, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiBody,
+  ApiConsumes,
+  ApiOperation,
+  ApiTags,
+} from '@nestjs/swagger';
 import { FirebaseService } from '../lib/firebase/firebase.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { MailService } from '../lib/mail/mail.service';
@@ -23,6 +29,7 @@ import { SendMailDTO } from './dto/send-mail.dto';
 import { templateVerificationEmail } from 'src/constants/helper';
 import { RoleGuard } from 'src/common/guards/role.guard';
 import { Roles } from 'src/common/decorator/role.decorator';
+import { FindUsersByListIdDto } from './dto/find-user.dto';
 
 @ApiTags('User')
 @Controller('user')
@@ -41,6 +48,11 @@ export class UserController {
     return this.userService.findAll();
   }
 
+  @Get('/list-user')
+  @ApiOperation({ summary: 'Get list user by list userId' })
+  getListTopicByListId(@Query() findUsersByListIdDto: FindUsersByListIdDto) {
+    return this.userService.getListUserByListId(findUsersByListIdDto.listId);
+  }
   @Post()
   create(@Body() createUserDto: CreateUserDto) {
     return this.userService.create(createUserDto);

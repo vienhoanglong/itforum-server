@@ -94,14 +94,8 @@ export class CommentService {
         discussId: this.utilService.convertToObjectId(discussId),
         commentParentId: commentParentId || null,
       })
-      .select({
-        left: 1,
-        right: 1,
-        content: 1,
-        commentParentId: 1,
-      })
       .sort({
-        left: 1,
+        left: commentParentId ? 1 : -1,
       })
       .limit(limit)
       .skip(skip)
