@@ -5,7 +5,7 @@ import { CreateMessageDto } from './dto';
 import { MessageSerialization } from './serialization';
 
 @ApiTags('Message')
-@Controller('Message')
+@Controller('message')
 export class MessageController {
   constructor(private messageService: MessageService) {}
   @Get('conversation/:conversationId')

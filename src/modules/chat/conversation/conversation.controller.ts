@@ -14,7 +14,7 @@ import { ConversationSerialization } from './serialization';
 import { CreateConversationDto, UpdateConversationDto } from './dto';
 
 @ApiTags('Conversation')
-@Controller('Conversation')
+@Controller('conversation')
 export class ConversationController {
   constructor(private conversationService: ConversationService) {}
   @Post()

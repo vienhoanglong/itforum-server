@@ -30,7 +30,7 @@ import {
 import { NotificationSerialization } from './serialization';
 
 @ApiTags('Notification')
-@Controller('Notification')
+@Controller('notification')
 export class NotificationController {
   constructor(private readonly notificationService: NotificationService) {}
 
