@@ -7,8 +7,6 @@ export class CreateNotificationDto {
   descNotice: string;
   @ApiPropertyOptional({ type: String })
   createdBy?: string;
-  @ApiProperty({ type: Date })
-  createdAt: Date;
   @ApiProperty({
     type: String,
     enum: ['recruitment', 'event', 'subject', 'other'],
