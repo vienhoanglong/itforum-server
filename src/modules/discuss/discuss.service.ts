@@ -41,7 +41,9 @@ export class DiscussService {
     const sortOptions: any = {};
     sortOptions[sortField] = sort === 'asc' ? 1 : -1;
 
-    const query = topicId ? { topic: topicId } : {};
+    const query = topicId
+      ? { topic: topicId, isDraft: false }
+      : { isDraft: false };
     const discussList = await this.discussModel
       .find(query)
       .sort(sortOptions)
@@ -101,6 +103,6 @@ export class DiscussService {
   }
 
   async getDiscussesOnTrash(): Promise<Discuss[]> {
-    return await this.discussModel.find({ isDraft: false }).exec();
+    return await this.discussModel.find({ isDraft: true }).exec();
   }
 }
