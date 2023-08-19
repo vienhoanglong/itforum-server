@@ -18,7 +18,7 @@ export class Discuss extends Document {
   topic?: mongoose.Types.ObjectId[];
   @Prop()
   slug: string;
-  @Prop({ type: Boolean, default: true, index: true, select: false })
+  @Prop({ type: Boolean, default: true, index: true })
   isDraft: boolean;
 }
 export const DiscussSchema = SchemaFactory.createForClass(Discuss);
