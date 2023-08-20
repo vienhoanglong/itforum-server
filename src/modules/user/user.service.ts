@@ -116,4 +116,14 @@ export class UserService {
       throw new BadRequestException(error);
     }
   }
+
+  async searchByUsername(username: string): Promise<User[]> {
+    try {
+      return this.userModel
+        .find({ username: { $regex: username, $options: 'i' } })
+        .exec();
+    } catch (error) {
+      throw new BadRequestException(error);
+    }
+  }
 }

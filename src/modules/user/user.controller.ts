@@ -63,6 +63,12 @@ export class UserController {
     return this.firebaseService.getListAvatar();
   }
 
+  @Get('search')
+  @ApiOperation({ summary: 'search user by username' })
+  searchByUsername(@Query('username') username: string) {
+    return this.userService.searchByUsername(username);
+  }
+
   @Get('email')
   findByEmail(@Query('email') email: string) {
     return this.userService.findByEmailNotPass(email);
