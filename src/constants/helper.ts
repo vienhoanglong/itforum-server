@@ -34,3 +34,24 @@ export default function generateOTP(limit = 6): string {
   }
   return OTP;
 }
+
+export const getCommaSeparatedNames = (
+  users: {
+    fullName: string;
+    username: string;
+    email: string;
+  }[],
+  maxNames = 3,
+): string => {
+  const names: string[] = users.map((user) => {
+    const lastName = user.fullName.split(' ').pop() || ''; // In case fullName is empty
+    return lastName;
+  });
+
+  if (names.length <= maxNames) {
+    return names.join(',');
+  } else {
+    const truncatedNames = names.slice(0, maxNames);
+    return `${truncatedNames.join(',')},...`;
+  }
+};
