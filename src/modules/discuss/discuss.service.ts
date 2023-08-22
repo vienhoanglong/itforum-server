@@ -163,4 +163,15 @@ export class DiscussService {
       throw new BadRequestException(error);
     }
   }
+
+  async getDiscussByStatusOrDraft(
+    statusDiscuss: number,
+    isDraft: boolean,
+  ): Promise<Discuss[]> {
+    try {
+      return await this.discussModel.find({ statusDiscuss, isDraft }).exec();
+    } catch (error) {
+      throw new BadRequestException(error);
+    }
+  }
 }

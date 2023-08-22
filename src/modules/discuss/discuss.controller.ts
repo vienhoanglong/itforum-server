@@ -42,6 +42,20 @@ export class DiscussController {
     return this.discussService.getDiscussesOnTrash();
   }
 
+  @Get('/discussions-by-status')
+  @ApiResponse({
+    status: HttpStatus.OK,
+    type: Object,
+    description: 'Find discuss by status or isDraft success',
+  })
+  @ApiOperation({ summary: 'Find discuss by status or isDraft' })
+  getDiscussByStatusOrIsDraft(
+    @Query('status') status: number,
+    @Query('isDraft') isDraft: boolean,
+  ) {
+    return this.discussService.getDiscussByStatusOrDraft(status, isDraft);
+  }
+
   @Get(':id')
   @ApiResponse({
     status: HttpStatus.OK,
@@ -138,8 +152,8 @@ export class DiscussController {
     description: 'Increment view success',
   })
   @ApiOperation({ summary: 'Increment view discuss by discussId' })
-  async incrementTotalView(@Param('id') id: string) {
-    const updatedDiscuss = await this.discussService.incrementTotalView(id);
+  incrementTotalView(@Param('id') id: string) {
+    const updatedDiscuss = this.discussService.incrementTotalView(id);
     return { totalView: updatedDiscuss };
   }
 }
