@@ -11,7 +11,7 @@ export class Message extends Document {
   conversationId: mongoose.Types.ObjectId;
 
   @Prop({ type: mongoose.Types.ObjectId, ref: 'User' })
-  senderId: mongoose.Types.ObjectId;
+  senderId?: mongoose.Types.ObjectId;
 
   @Prop({
     type: [
@@ -25,7 +25,7 @@ export class Message extends Document {
   reactionMessage?: { userId: mongoose.Types.ObjectId; typeEmotion: string }[];
 
   @Prop({ default: 'text' })
-  typeMessage: string;
+  typeMessage: string; //alert,file,image,link
 }
 
 export const MessageSchema = SchemaFactory.createForClass(Message);

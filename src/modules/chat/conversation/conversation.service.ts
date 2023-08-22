@@ -8,6 +8,7 @@ import {
 import { CreateConversationDto, UpdateConversationDto } from './dto';
 import { UserService } from 'src/modules/user/user.service';
 import { getCommaSeparatedNames } from 'src/constants/helper';
+import { MessageService } from '../message/message.service';
 
 @Injectable()
 export class ConversationService {
@@ -15,6 +16,7 @@ export class ConversationService {
     @InjectModel(Conversation.name)
     private conversationModel: Model<ConversationDocument>,
     private userService: UserService,
+    private messageService: MessageService,
   ) {}
 
   async createConversation(
@@ -47,20 +49,30 @@ export class ConversationService {
   async updateConversation(
     id: string,
     updateConversationDto: UpdateConversationDto,
+    updatedBy: string,
   ): Promise<Conversation> {
     try {
-      return this.conversationModel.findByIdAndUpdate(
+      const conversation = await this.conversationModel.findByIdAndUpdate(
         id,
         updateConversationDto,
         { new: true },
       );
+      if (conversation) {
+        await this.messageService.createMessage({
+          senderId: updatedBy,
+          typeMessage: 'alert',
+          contentMessage: 'The conversation was updated by',
+          conversationId: id,
+        });
+      }
+      return conversation;
     } catch (error) {
       throw new BadRequestException(error);
     }
   }
   async deleteConversation(id: string): Promise<boolean> {
     try {
-      return this.conversationModel.findByIdAndRemove(id);
+      return await this.conversationModel.findByIdAndRemove(id);
     } catch (error) {
       throw new BadRequestException(error);
     }
@@ -68,31 +80,57 @@ export class ConversationService {
 
   async getConversationById(id: string): Promise<Conversation> {
     try {
-      return this.conversationModel.findById(id);
+      return await this.conversationModel.findById(id);
     } catch (error) {
       throw new BadRequestException(error);
     }
   }
 
-  async removeMember(id: string, memberId: string): Promise<Conversation> {
+  async removeMember(
+    id: string,
+    memberId: string,
+    removedBy: string,
+  ): Promise<Conversation> {
     try {
-      return this.conversationModel.findByIdAndUpdate(
+      const conversation = await this.conversationModel.findByIdAndUpdate(
         id,
         { $pull: { members: memberId } },
         { new: true },
       );
+      if (conversation) {
+        await this.messageService.createMessage({
+          senderId: removedBy,
+          typeMessage: 'alert',
+          contentMessage: 'has been removed from the conversation by',
+          conversationId: id,
+        });
+      }
+      return conversation;
     } catch (error) {
       throw new BadRequestException(error);
     }
   }
 
-  async addMember(id: string, memberId: string): Promise<Conversation> {
+  async addMember(
+    id: string,
+    memberId: string,
+    addedBy: string,
+  ): Promise<Conversation> {
     try {
-      return this.conversationModel.findByIdAndUpdate(
+      const conversation = await this.conversationModel.findByIdAndUpdate(
         id,
         { $push: { members: memberId } },
         { new: true },
       );
+      if (conversation) {
+        await this.messageService.createMessage({
+          senderId: addedBy,
+          typeMessage: 'alert',
+          contentMessage: 'has been added from the conversation by',
+          conversationId: id,
+        });
+      }
+      return conversation;
     } catch (error) {
       throw new BadRequestException(error);
     }

@@ -14,7 +14,7 @@ export class MessageService {
   async createMessage(createMessageDto: CreateMessageDto): Promise<Message> {
     try {
       const message = new this.messageModel(createMessageDto);
-      return message.save();
+      return await message.save();
     } catch (error) {
       throw new BadRequestException(error);
     }
@@ -22,6 +22,10 @@ export class MessageService {
   async getAllMessagesInConversation(
     conversationId: string,
   ): Promise<Message[]> {
-    return this.messageModel.find({ conversationId }).exec();
+    try {
+      return await this.messageModel.find({ conversationId }).exec();
+    } catch (error) {
+      throw new BadRequestException(error);
+    }
   }
 }

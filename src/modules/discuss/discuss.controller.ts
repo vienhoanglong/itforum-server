@@ -95,7 +95,21 @@ export class DiscussController {
     return discussList;
   }
 
-  @Patch('trash-or-restore/:id')
+  @Patch('trash-or-restore/:id/status/:status')
+  @ApiResponse({
+    status: HttpStatus.OK,
+    type: Object,
+    description: 'change status discuss success',
+  })
+  @ApiOperation({ summary: 'Change status discuss' })
+  updateStatusDiscuss(
+    @Param('id') id: string,
+    @Param('status') status: number,
+  ) {
+    return this.discussService.updateStatusDiscuss(id, status);
+  }
+
+  @Patch('update-status/:id')
   @ApiResponse({
     status: HttpStatus.OK,
     type: Object,

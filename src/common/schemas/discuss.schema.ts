@@ -20,6 +20,8 @@ export class Discuss extends Document {
   slug: string;
   @Prop({ type: Boolean, default: false, index: true })
   isDraft: boolean;
+  @Prop({ type: Number, default: 0, index: true }) //0: Pending, 1: Approved, 2: Not Approved, 3: Hidden
+  statusDiscuss: number;
 }
 export const DiscussSchema = SchemaFactory.createForClass(Discuss);
 

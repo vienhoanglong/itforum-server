@@ -27,7 +27,7 @@ export class ConversationController {
   createConversation(@Body() createConversationDto: CreateConversationDto) {
     return this.conversationService.createConversation(createConversationDto);
   }
-  @Patch(':id')
+  @Patch(':id/:updatedBy')
   @ApiResponse({
     status: HttpStatus.OK,
     type: ConversationSerialization,
@@ -36,11 +36,13 @@ export class ConversationController {
   @ApiOperation({ summary: 'Update conversation by conversationId' })
   updateConversation(
     @Param('id') id: string,
+    @Param('updatedBy') updatedBy: string,
     @Body() updateConversationDto: UpdateConversationDto,
   ) {
     return this.conversationService.updateConversation(
       id,
       updateConversationDto,
+      updatedBy,
     );
   }
   @Delete(':id')
@@ -53,7 +55,7 @@ export class ConversationController {
   deleteConversation(@Param('id') id: string) {
     return this.conversationService.deleteConversation(id);
   }
-  @Patch(':conversationId/remove-member/:memberId')
+  @Patch(':conversationId/remove-member/:memberId/:senderId')
   @ApiResponse({
     status: HttpStatus.OK,
     type: ConversationSerialization,
@@ -63,11 +65,16 @@ export class ConversationController {
   removeMember(
     @Param('conversationId') conversationId: string,
     @Param('memberId') memberId: string,
+    @Param('senderId') senderId: string,
   ) {
-    return this.conversationService.removeMember(conversationId, memberId);
+    return this.conversationService.removeMember(
+      conversationId,
+      memberId,
+      senderId,
+    );
   }
 
-  @Patch(':conversationId/add-member/:memberId')
+  @Patch(':conversationId/add-member/:memberId/:addedBy')
   @ApiResponse({
     status: HttpStatus.OK,
     type: ConversationSerialization,
@@ -77,8 +84,13 @@ export class ConversationController {
   addMember(
     @Param('conversationId') conversationId: string,
     @Param('memberId') memberId: string,
+    @Param('addedBy') addedBy: string,
   ) {
-    return this.conversationService.addMember(conversationId, memberId);
+    return this.conversationService.addMember(
+      conversationId,
+      memberId,
+      addedBy,
+    );
   }
 
   @Get('user/:userId')
