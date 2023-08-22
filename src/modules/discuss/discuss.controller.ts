@@ -95,7 +95,7 @@ export class DiscussController {
     return discussList;
   }
 
-  @Patch('trash-or-restore/:id/status/:status')
+  @Patch('change-status/:id/status/:status')
   @ApiResponse({
     status: HttpStatus.OK,
     type: Object,
@@ -109,14 +109,14 @@ export class DiscussController {
     return this.discussService.updateStatusDiscuss(id, status);
   }
 
-  @Patch('update-status/:id')
+  @Patch('trash-or-restore/:id')
   @ApiResponse({
     status: HttpStatus.OK,
     type: Object,
     description: 'Move to trash or restore discuss success',
   })
   @ApiOperation({ summary: 'Move to trash or restore discuss' })
-  moveTooTrashOrRestore(@Param('id') id: string) {
+  moveToTrashOrRestore(@Param('id') id: string) {
     return this.discussService.moveDiscussToTrashOrRestore(id);
   }
 
