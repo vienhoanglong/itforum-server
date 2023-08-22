@@ -57,13 +57,15 @@ export class DiscussController {
   getDiscussByStatusOrIsDraft(
     @Query() findDiscussOptionDTO: FindDiscussOptionDto,
   ) {
-    const { statusDiscuss, isDraft, limit, skip, sort } = findDiscussOptionDTO;
+    const { statusDiscuss, isDraft, limit, skip, sort, topicId } =
+      findDiscussOptionDTO;
     return this.discussService.getDiscussByStatusOrDraft(
       statusDiscuss,
       isDraft,
       skip,
       limit,
       sort,
+      topicId,
     );
   }
 

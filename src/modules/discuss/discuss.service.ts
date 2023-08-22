@@ -170,6 +170,7 @@ export class DiscussService {
     skip?: number,
     limit?: number,
     sort?: 'asc' | 'desc',
+    topicId?: string,
   ): Promise<Discuss[]> {
     try {
       const sortField = 'createdAt';
@@ -178,6 +179,9 @@ export class DiscussService {
       const query: { [x: string]: string | number | boolean } = {};
       query.statusDiscuss = statusDiscuss;
       query.isDraft = isDraft ?? false;
+      if (topicId !== undefined) {
+        query.topicId = topicId;
+      }
       const discussList = await this.discussModel
         .find(query)
         .sort(sortOptions)

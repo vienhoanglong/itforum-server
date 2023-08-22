@@ -1,9 +1,4 @@
-import {
-  ApiProperty,
-  ApiPropertyOptional,
-  OmitType,
-  PartialType,
-} from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional, PartialType } from '@nestjs/swagger';
 
 export class FindDiscussDTO {
   @ApiProperty({ type: Number })
@@ -16,9 +11,7 @@ export class FindDiscussDTO {
   topicId?: string;
 }
 
-export class FindDiscussOptionDto extends PartialType(
-  OmitType(FindDiscussDTO, ['topicId']),
-) {
+export class FindDiscussOptionDto extends PartialType(FindDiscussDTO) {
   @ApiPropertyOptional({ type: Number })
   statusDiscuss?: number;
   @ApiPropertyOptional({ type: Boolean })
