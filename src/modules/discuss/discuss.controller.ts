@@ -10,7 +10,12 @@ import {
   Delete,
 } from '@nestjs/common';
 import { DiscussService } from './discuss.service';
-import { CreateDiscussDTO, FindDiscussDTO, UpdateDiscussDTO } from './dto';
+import {
+  CreateDiscussDTO,
+  FindDiscussDTO,
+  FindDiscussOptionDto,
+  UpdateDiscussDTO,
+} from './dto';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { DiscussSerialization } from './serialization';
 @ApiTags('Discuss')
@@ -50,10 +55,16 @@ export class DiscussController {
   })
   @ApiOperation({ summary: 'Find discuss by status or isDraft' })
   getDiscussByStatusOrIsDraft(
-    @Query('status') status: number,
-    @Query('isDraft') isDraft: boolean,
+    @Query() findDiscussOptionDTO: FindDiscussOptionDto,
   ) {
-    return this.discussService.getDiscussByStatusOrDraft(status, isDraft);
+    const { statusDiscuss, isDraft, limit, skip, sort } = findDiscussOptionDTO;
+    return this.discussService.getDiscussByStatusOrDraft(
+      statusDiscuss,
+      isDraft,
+      skip,
+      limit,
+      sort,
+    );
   }
 
   @Get(':id')

@@ -167,9 +167,24 @@ export class DiscussService {
   async getDiscussByStatusOrDraft(
     statusDiscuss: number,
     isDraft: boolean,
+    skip?: number,
+    limit?: number,
+    sort?: 'asc' | 'desc',
   ): Promise<Discuss[]> {
     try {
-      return await this.discussModel.find({ statusDiscuss, isDraft }).exec();
+      const sortField = 'createdAt';
+      const sortOptions: any = {};
+      sortOptions[sortField] = sort === 'asc' ? 1 : -1;
+      const query: { [x: string]: string | number | boolean } = {};
+      query.statusDiscuss = statusDiscuss;
+      query.isDraft = isDraft ?? false;
+      const discussList = await this.discussModel
+        .find(query)
+        .sort(sortOptions)
+        .skip(skip)
+        .limit(limit)
+        .exec();
+      return discussList;
     } catch (error) {
       throw new BadRequestException(error);
     }

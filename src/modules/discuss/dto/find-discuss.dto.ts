@@ -1,4 +1,9 @@
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import {
+  ApiProperty,
+  ApiPropertyOptional,
+  OmitType,
+  PartialType,
+} from '@nestjs/swagger';
 
 export class FindDiscussDTO {
   @ApiProperty({ type: Number })
@@ -9,4 +14,13 @@ export class FindDiscussDTO {
   sort?: 'asc' | 'desc';
   @ApiPropertyOptional({ type: String })
   topicId?: string;
+}
+
+export class FindDiscussOptionDto extends PartialType(
+  OmitType(FindDiscussDTO, ['topicId']),
+) {
+  @ApiPropertyOptional({ type: Number })
+  statusDiscuss?: number;
+  @ApiPropertyOptional({ type: Boolean })
+  isDraft?: boolean;
 }
