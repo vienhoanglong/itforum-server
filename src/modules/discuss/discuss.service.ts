@@ -177,10 +177,10 @@ export class DiscussService {
       const sortOptions: any = {};
       sortOptions[sortField] = sort === 'asc' ? 1 : -1;
       const query: { [x: string]: string | number | boolean } = {};
-      query.statusDiscuss = statusDiscuss;
+      query.statusDiscuss = Number(statusDiscuss);
       query.isDraft = isDraft ?? false;
       if (topicId !== undefined) {
-        query.topicId = topicId;
+        query.topic = topicId;
       }
       const discussList = await this.discussModel
         .find(query)
