@@ -117,20 +117,20 @@ export class ConversationController {
     return this.conversationService.getListConversationByUser(userId);
   }
 
-  @Patch('updateImage')
+  @Post('update-image')
   @ApiConsumes('multipart/form-data')
   @ApiBody({
-    description: 'File/Image and Notification Data',
+    description: 'File/Image',
     type: UpdateImageConversationDto,
   })
   @UseInterceptors(FileInterceptor('file'))
-  @ApiOperation({ summary: 'Create notification' })
+  @ApiOperation({ summary: 'Update image conversation' })
   @ApiResponse({
     status: HttpStatus.OK,
     type: ConversationSerialization,
-    description: 'Update notification success',
+    description: 'Update image conversation success',
   })
-  @ApiOperation({ summary: 'Update notification by noticeId' })
+  @ApiOperation({ summary: 'Update image conversation' })
   updateImageConversation(
     @Body() updateImageConversationDto: UpdateImageConversationDto,
     @UploadedFile() file: Express.Multer.File,
