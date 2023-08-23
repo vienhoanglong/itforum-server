@@ -64,10 +64,10 @@ export class NotificationController {
     description: 'Get notification from the trash success',
   })
   @ApiOperation({
-    summary: 'Get notification from the trash with isDeteled set to true',
+    summary: 'Get notification from the trash with isDeleted set to true',
   })
-  async getNotificationOnTrash(@Query('isDeleted') isDeteled: boolean) {
-    return this.notificationService.getNotificationOnTrash(isDeteled);
+  async getNotificationOnTrash(@Query('isDeleted') isDeleted: boolean) {
+    return this.notificationService.getNotificationOnTrash(isDeleted);
   }
 
   @Get('/find-by-type')
@@ -105,7 +105,7 @@ export class NotificationController {
     type: UpdateNotificationDto,
   })
   @UseInterceptors(FileInterceptor('file'))
-  @ApiOperation({ summary: 'Create notification' })
+  @ApiOperation({ summary: 'Update notification' })
   @ApiResponse({
     status: HttpStatus.OK,
     type: NotificationSerialization,
@@ -122,6 +122,16 @@ export class NotificationController {
       updateNotificationDto,
       file,
     );
+  }
+  @Get(':id')
+  @ApiResponse({
+    status: HttpStatus.OK,
+    type: NotificationSerialization,
+    description: 'Get notification by id success',
+  })
+  @ApiOperation({ summary: 'Get notification by discussId' })
+  findDiscussById(@Param('id') id: string) {
+    return this.notificationService.findByNotificationId(id);
   }
 
   @Get()

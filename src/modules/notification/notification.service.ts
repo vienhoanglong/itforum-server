@@ -1,4 +1,9 @@
-import { HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  HttpStatus,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import {
@@ -128,5 +133,12 @@ export class NotificationService {
       message: 'Remove notification successfully',
       data: true,
     };
+  }
+  async findByNotificationId(id: string): Promise<Notification> {
+    try {
+      return this.noticeModel.findById(id);
+    } catch (error) {
+      throw new BadRequestException(error);
+    }
   }
 }
