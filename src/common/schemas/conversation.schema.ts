@@ -14,6 +14,8 @@ export class Conversation extends Document {
   createdBy: string;
   @Prop({ type: String })
   imgConversation?: string;
+  @Prop({ type: String })
+  theme?: string;
 }
 
 export const ConversationSchema = SchemaFactory.createForClass(Conversation);

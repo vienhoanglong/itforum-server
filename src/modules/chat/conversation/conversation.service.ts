@@ -9,6 +9,7 @@ import { CreateConversationDto, UpdateConversationDto } from './dto';
 import { UserService } from 'src/modules/user/user.service';
 import { getCommaSeparatedNames } from 'src/constants/helper';
 import { MessageService } from '../message/message.service';
+import { FirebaseService } from 'src/modules/lib/firebase/firebase.service';
 
 @Injectable()
 export class ConversationService {
@@ -17,6 +18,7 @@ export class ConversationService {
     private conversationModel: Model<ConversationDocument>,
     private userService: UserService,
     private messageService: MessageService,
+    private readonly firebaseService: FirebaseService,
   ) {}
 
   async createConversation(
@@ -139,6 +141,33 @@ export class ConversationService {
   async getListConversationByUser(userId: string): Promise<Conversation[]> {
     try {
       return this.conversationModel.find({ members: userId }).exec();
+    } catch (error) {
+      throw new BadRequestException(error);
+    }
+  }
+
+  async updateImageConversation(
+    payload: { conversationId: string; updatedBy: string },
+    file: Express.Multer.File,
+  ): Promise<any> {
+    try {
+      const data = await this.firebaseService.uploadFile(file);
+      if (data) {
+        const response = await this.conversationModel.findByIdAndUpdate(
+          payload.conversationId,
+          { imgConversation: Object.values(data)[0] ?? undefined },
+          { new: true },
+        );
+        if (response) {
+          await this.messageService.createMessage({
+            senderId: payload.updatedBy,
+            typeMessage: 'alert',
+            contentMessage: 'changed the theme',
+            conversationId: payload.conversationId,
+          });
+        }
+        return response;
+      }
     } catch (error) {
       throw new BadRequestException(error);
     }

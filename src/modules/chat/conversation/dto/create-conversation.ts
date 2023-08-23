@@ -9,10 +9,12 @@ export class CreateConversationDto {
   members?: string[];
   @ApiPropertyOptional({ type: String })
   nameConversation?: string;
-  @ApiProperty({ type: String })
+  @ApiPropertyOptional({ type: String })
   descConversation?: string;
   @ApiProperty({ type: String })
   createdBy: string;
-  @ApiProperty({ type: String })
+  @ApiPropertyOptional({ type: String })
   imgConversation?: string;
+  @ApiPropertyOptional({ type: String })
+  theme?: string;
 }
