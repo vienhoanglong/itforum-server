@@ -27,8 +27,8 @@ export class NotificationService {
     const newNotice = new this.noticeModel(createNotificationDto);
     if (file) {
       const data = await this.firebaseService.uploadFile(file);
-      const link = Object.values(data);
-      newNotice.file = link[0] ?? undefined;
+      newNotice.file = data.link ?? undefined;
+      newNotice.filename = data?.filename ?? undefined;
     }
     return await newNotice.save();
   }
@@ -69,8 +69,8 @@ export class NotificationService {
   ): Promise<Notification> {
     if (file) {
       const data = await this.firebaseService.uploadFile(file);
-      const link = Object.values(data);
-      updateNotificationDto.file = link[0] ?? '';
+      updateNotificationDto.file = data?.link ?? '';
+      updateNotificationDto.filename = data?.filename ?? '';
     }
     const updateNotification = {
       ...updateNotificationDto,

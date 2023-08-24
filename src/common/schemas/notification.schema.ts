@@ -22,6 +22,9 @@ export class Notification extends Document {
   @Prop()
   file?: string;
 
+  @Prop()
+  filename?: string;
+
   @Prop({ default: 'normal' })
   level?: string;
 

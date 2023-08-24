@@ -16,7 +16,9 @@ export class FirebaseService {
     this.storage = admin.storage();
     this.bucket = this.storage.bucket();
   }
-  async uploadFile(file: Express.Multer.File): Promise<object> {
+  async uploadFile(
+    file: Express.Multer.File,
+  ): Promise<{ link: string; filename: string }> {
     const storageBucket = this.storage.bucket();
     const filename = file.originalname;
     const fileRef = storageBucket.file(filename);
@@ -33,7 +35,7 @@ export class FirebaseService {
       action: 'read',
       expires: '03-01-2500', // Adjust the expiration date as needed
     });
-    return { link: downloadUrl.toString() };
+    return { link: downloadUrl[0], filename: filename };
   }
 
   async getListAvatar(): Promise<object> {
