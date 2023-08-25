@@ -17,6 +17,7 @@ import {
   ConversationSchema,
 } from '../schemas/conversation.schema';
 import { Message, MessageSchema } from '../schemas/message.schema';
+import { Files, FilesSchema } from '../schemas/document.schema';
 
 dotenv.config();
 @Module({
@@ -41,6 +42,7 @@ dotenv.config();
       { name: Notification.name, schema: NotificationSchema },
       { name: Conversation.name, schema: ConversationSchema },
       { name: Message.name, schema: MessageSchema },
+      { name: Files.name, schema: FilesSchema },
 
       //Add more...
     ]),

@@ -70,6 +70,12 @@ export class NotificationController {
     return this.notificationService.getNotificationOnTrash(isDeleted);
   }
 
+  @Get('search')
+  @ApiOperation({ summary: 'search notification by title' })
+  searchByUsername(@Query('titleNotice') titleNotice: string) {
+    return this.notificationService.searchNotificationByTitle(titleNotice);
+  }
+
   @Get('/find-by-type')
   @ApiResponse({
     status: HttpStatus.OK,

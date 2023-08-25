@@ -7,5 +7,6 @@ import { TopicService } from './topic.service';
   imports: [DatabaseModule],
   controllers: [TopicController],
   providers: [TopicService],
+  exports: [TopicService],
 })
 export class TopicModule {}

@@ -2,6 +2,8 @@ import { Injectable } from '@nestjs/common';
 import * as admin from 'firebase-admin';
 import { FirebaseConfigService } from 'src/config/firebase.config';
 import { Bucket, File } from '@google-cloud/storage';
+import { v4 as uuidv4 } from 'uuid';
+import { removeVietnameseTones } from 'src/constants/helper';
 @Injectable()
 export class FirebaseService {
   private storage: admin.storage.Storage;
@@ -20,7 +22,8 @@ export class FirebaseService {
     file: Express.Multer.File,
   ): Promise<{ link: string; filename: string }> {
     const storageBucket = this.storage.bucket();
-    const filename = file.originalname;
+    const originalname = removeVietnameseTones(file.originalname);
+    const filename = uuidv4() + '_' + file.originalname;
     const fileRef = storageBucket.file(filename);
 
     await fileRef.save(file.buffer, {
@@ -35,7 +38,7 @@ export class FirebaseService {
       action: 'read',
       expires: '03-01-2500', // Adjust the expiration date as needed
     });
-    return { link: downloadUrl[0], filename: filename };
+    return { link: downloadUrl[0], filename: originalname };
   }
 
   async getListAvatar(): Promise<object> {
@@ -61,5 +64,39 @@ export class FirebaseService {
       });
 
     return Promise.all(fileList);
+  }
+
+  async uploadFileIntoDocuments(
+    file: Express.Multer.File,
+  ): Promise<{ link: string; filename: string; extension: string }> {
+    const originalname = removeVietnameseTones(file.originalname);
+    const extension = originalname.split('.').pop();
+    const filename = uuidv4() + '_' + file.originalname;
+    const fileRef = this.storage.bucket().file(`documents/${filename}`);
+
+    await fileRef.save(file.buffer, {
+      metadata: {
+        contentType: file.mimetype,
+      },
+    });
+
+    const downloadUrl = await fileRef.getSignedUrl({
+      action: 'read',
+      expires: '03-01-2500',
+    });
+    return { link: downloadUrl[0], filename: originalname, extension };
+  }
+
+  async uploadMultipleFileDocuments(
+    files: Express.Multer.File[],
+  ): Promise<{ link: string; filename: string }[]> {
+    const uploadedFiles = [];
+
+    for (const file of files) {
+      const uploadedFile = await this.uploadFileIntoDocuments(file);
+      uploadedFiles.push(uploadedFile);
+    }
+
+    return uploadedFiles;
   }
 }

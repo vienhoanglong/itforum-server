@@ -141,4 +141,15 @@ export class NotificationService {
       throw new BadRequestException(error);
     }
   }
+  async searchNotificationByTitle(
+    titleNotice: string,
+  ): Promise<Notification[]> {
+    try {
+      return await this.noticeModel
+        .find({ titleNotice: { $regex: titleNotice, $options: 'i' } })
+        .exec();
+    } catch (error) {
+      throw new BadRequestException(error);
+    }
+  }
 }
