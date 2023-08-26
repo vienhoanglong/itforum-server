@@ -81,3 +81,7 @@ export const removeVietnameseTones = (str: string) => {
   // );
   return str;
 };
+export function isImageFile(extension: string): boolean {
+  const imageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'bmp'];
+  return imageExtensions.includes(extension.toLowerCase());
+}

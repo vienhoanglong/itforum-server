@@ -1,8 +1,24 @@
-import { Body, Controller, Get, HttpStatus, Param, Post } from '@nestjs/common';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  Body,
+  Controller,
+  Get,
+  HttpStatus,
+  Param,
+  Post,
+  UploadedFile,
+  UseInterceptors,
+} from '@nestjs/common';
+import {
+  ApiBody,
+  ApiConsumes,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { MessageService } from './message.service';
-import { CreateMessageDto } from './dto';
+import { CreateMessageAttachmentDto, CreateMessageDto } from './dto';
 import { MessageSerialization } from './serialization';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @ApiTags('Message')
 @Controller('message')
@@ -28,7 +44,29 @@ export class MessageController {
     description: 'Create conversation success',
   })
   @ApiOperation({ summary: 'Create new conversation' })
-  createConversation(@Body() createMessageDto: CreateMessageDto) {
+  createMessage(@Body() createMessageDto: CreateMessageDto) {
     return this.messageService.createMessage(createMessageDto);
+  }
+  @Post('message-file')
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    description: 'File/Image and Message Data',
+    type: CreateMessageAttachmentDto,
+  })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    type: MessageSerialization,
+    description: 'Create message file success',
+  })
+  @ApiOperation({ summary: 'Create new message file' })
+  @UseInterceptors(FileInterceptor('file'))
+  createMessageFile(
+    @Body() createMessageAttachmentDto: CreateMessageAttachmentDto,
+    @UploadedFile() file: Express.Multer.File,
+  ) {
+    return this.messageService.createMessageFile(
+      createMessageAttachmentDto,
+      file,
+    );
   }
 }

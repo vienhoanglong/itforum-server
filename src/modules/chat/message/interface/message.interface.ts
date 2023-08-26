@@ -4,6 +4,8 @@ export interface IMessage {
   senderId: string;
   reactionMessage?: IReactionMessage[];
   typeMessage: string;
+  file?: string;
+  typeFile?: string;
 }
 export interface IReactionMessage {
   userId: string;

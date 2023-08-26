@@ -99,4 +99,25 @@ export class FirebaseService {
 
     return uploadedFiles;
   }
+
+  async uploadFileIntoMessages(
+    file: Express.Multer.File,
+  ): Promise<{ link: string; filename: string; extension: string }> {
+    const originalname = removeVietnameseTones(file.originalname);
+    const extension = originalname.split('.').pop();
+    const filename = uuidv4() + '_' + file.originalname;
+    const fileRef = this.storage.bucket().file(`messages/${filename}`);
+
+    await fileRef.save(file.buffer, {
+      metadata: {
+        contentType: file.mimetype,
+      },
+    });
+
+    const downloadUrl = await fileRef.getSignedUrl({
+      action: 'read',
+      expires: '03-01-2500',
+    });
+    return { link: downloadUrl[0], filename: originalname, extension };
+  }
 }

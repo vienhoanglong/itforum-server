@@ -26,6 +26,12 @@ export class Message extends Document {
 
   @Prop({ default: 'text' })
   typeMessage: string; //alert,file,image,link
+
+  @Prop({ type: String })
+  file?: string;
+
+  @Prop({ type: String })
+  typeFile?: string;
 }
 
 export const MessageSchema = SchemaFactory.createForClass(Message);
