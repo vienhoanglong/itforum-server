@@ -49,9 +49,7 @@ export class MessageService {
         console.log(data);
         payload.file = data?.link;
         payload.typeFile = data?.extension;
-        payload.typeMessage = isImageFile(data.extension)
-          ? 'image'
-          : 'attachment';
+        payload.typeMessage = isImageFile(data.extension) ? 'image' : 'file';
       }
       const newMessage = new this.messageModel(payload);
       return await newMessage.save();
