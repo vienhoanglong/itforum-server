@@ -49,7 +49,10 @@ export class NotificationService {
     return noticeList;
   }
   async findNotificationsByType(typeNotice: string): Promise<Notification[]> {
-    const notices = await this.noticeModel.find({ typeNotice }).exec();
+    const notices = await this.noticeModel
+      .find({ typeNotice })
+      .sort({ createdAt: -1 })
+      .exec();
     if (!notices || notices.length === 0) {
       return [];
     }
