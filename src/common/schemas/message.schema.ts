@@ -31,7 +31,7 @@ export class Message extends Document {
   file?: string;
 
   @Prop({ type: String })
-  typeFile?: string;
+  nameFile?: string;
 }
 
 export const MessageSchema = SchemaFactory.createForClass(Message);

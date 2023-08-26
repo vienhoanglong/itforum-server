@@ -5,7 +5,7 @@ export interface IMessage {
   reactionMessage?: IReactionMessage[];
   typeMessage: string;
   file?: string;
-  typeFile?: string;
+  nameFile?: string;
 }
 export interface IReactionMessage {
   userId: string;

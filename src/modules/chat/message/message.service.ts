@@ -42,13 +42,13 @@ export class MessageService {
         ...createMessageAttachmentDto,
         reactionMessage: [],
         file: '',
-        typeFile: '',
+        nameFile: '',
       };
       if (file) {
         const data = await this.firebaseService.uploadFileIntoMessages(file);
         console.log(data);
         payload.file = data?.link;
-        payload.typeFile = data?.extension;
+        payload.nameFile = data?.filename;
         payload.typeMessage = isImageFile(data.extension) ? 'image' : 'file';
       }
       const newMessage = new this.messageModel(payload);
