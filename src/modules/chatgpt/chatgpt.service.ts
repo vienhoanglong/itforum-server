@@ -4,7 +4,7 @@ import axios from 'axios';
 @Injectable()
 export class ChatGPTService {
   async sendMessage(prompt: string): Promise<string> {
-    const apiKey = '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';
+    const apiKey = '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';
     const apiUrl = 'https://api.openai.com/v1/chat/completions';
 
     const headers = {
