@@ -25,7 +25,7 @@ export class Message extends Document {
   reactionMessage?: { userId: mongoose.Types.ObjectId; typeEmotion: string }[];
 
   @Prop({ default: 'text' })
-  typeMessage: string; //alert,file,image,link
+  typeMessage: string; //alert,file,image,link,chatgpt
 
   @Prop({ type: String })
   file?: string;

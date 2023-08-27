@@ -85,3 +85,6 @@ export function isImageFile(extension: string): boolean {
   const imageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'bmp'];
   return imageExtensions.includes(extension.toLowerCase());
 }
+
+export const urlLogoChatGpt =
+  'https://firebasestorage.googleapis.com/v0/b/ict-forum-392507.appspot.com/o/chatgpt-logo-chat-gpt-icon-on-green-background-free-vector.jpg?alt=media&token=d02dda3f-3e68-475e-b491-f6b40a84e48d';

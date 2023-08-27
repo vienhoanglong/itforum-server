@@ -47,6 +47,17 @@ export class MessageController {
   createMessage(@Body() createMessageDto: CreateMessageDto) {
     return this.messageService.createMessage(createMessageDto);
   }
+
+  @Post('chat-gpt')
+  @ApiResponse({
+    status: HttpStatus.OK,
+    type: MessageSerialization,
+    description: 'Create new message chatgpt success',
+  })
+  @ApiOperation({ summary: 'Create new message chatgpt' })
+  createMessageChatGPT(@Body() createMessageDto: CreateMessageDto) {
+    return this.messageService.createMessageChatGpt(createMessageDto);
+  }
   @Post('message-file')
   @ApiConsumes('multipart/form-data')
   @ApiBody({

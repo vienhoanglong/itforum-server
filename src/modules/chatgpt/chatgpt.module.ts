@@ -6,5 +6,6 @@ import { ChatGPTService } from './chatgpt.service';
   imports: [],
   controllers: [ChatGPTController],
   providers: [ChatGPTService],
+  exports: [ChatGPTService],
 })
 export class ChatGPTModule {}
