@@ -24,7 +24,7 @@ export class ChatGPTService {
       const content = response.data.choices[0].message.content.trim();
       return content;
     } catch (error) {
-      throw new Error('Failed to send message');
+      return 'API Key hết hiệu lực, hoặc gặp lỗi vui lòng kiểm tra lại từ openai. Xin lỗi vì sự bất tiện này!';
     }
   }
 }
