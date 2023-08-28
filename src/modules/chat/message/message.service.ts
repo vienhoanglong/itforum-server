@@ -76,14 +76,14 @@ export class MessageService {
         payload.typeMessage = 'chatgpt';
         payload.file = urlLogoChatGpt;
         const messageChatgpt = new this.messageModel(payload);
-        return messageChatgpt.save();
+        return await messageChatgpt.save();
       } else {
         payload.contentMessage =
           'API Key hết hiệu lực, hoặc gặp lỗi vui lòng kiểm tra lại từ openai. Xin lỗi vì sự bất tiện này!';
         payload.typeMessage = 'chatgpt';
         payload.file = urlLogoChatGpt;
         const messageChatgpt = new this.messageModel(payload);
-        return messageChatgpt.save();
+        return await messageChatgpt.save();
       }
     } catch (error) {
       throw new BadRequestException(error);
