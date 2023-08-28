@@ -60,27 +60,34 @@ export class MessageService {
     }
   }
 
+  private async createMessageWithChatGpt(request: CreateMessageDto) {
+    try {
+      const data = await this.chatGPTService.sendMessage(
+        request.contentMessage,
+      );
+      const payload: Partial<IMessage> = {
+        ...request,
+        contentMessage: '',
+        typeMessage: '',
+        file: '',
+      };
+      payload.contentMessage = data;
+      payload.typeMessage = 'chatgpt';
+      payload.file = urlLogoChatGpt;
+      const messageChatgpt = new this.messageModel(payload);
+      return messageChatgpt.save();
+    } catch (error) {
+      throw new BadRequestException(error);
+    }
+  }
   async createMessageChatGpt(
     createMessageDto: CreateMessageDto,
   ): Promise<Message> {
     try {
       const message = new this.messageModel(createMessageDto);
       const response = await message.save();
-      const data = await this.chatGPTService.sendMessage(
-        createMessageDto.contentMessage,
-      );
-      if (data) {
-        const payload: Partial<IMessage> = {
-          ...createMessageDto,
-          contentMessage: '',
-          typeMessage: '',
-          file: '',
-        };
-        payload.contentMessage = data;
-        payload.typeMessage = 'chatgpt';
-        payload.file = urlLogoChatGpt;
-        const messageChatgpt = new this.messageModel(payload);
-        await messageChatgpt.save();
+      if (response) {
+        this.createMessageWithChatGpt(createMessageDto);
       }
       return response;
     } catch (error) {
