@@ -18,6 +18,7 @@ import {
 } from '../schemas/conversation.schema';
 import { Message, MessageSchema } from '../schemas/message.schema';
 import { Files, FilesSchema } from '../schemas/document.schema';
+import { Posts, PostsSchema } from '../schemas/posts';
 
 dotenv.config();
 @Module({
@@ -43,7 +44,7 @@ dotenv.config();
       { name: Conversation.name, schema: ConversationSchema },
       { name: Message.name, schema: MessageSchema },
       { name: Files.name, schema: FilesSchema },
-
+      { name: Posts.name, schema: PostsSchema },
       //Add more...
     ]),
   ],

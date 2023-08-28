@@ -120,4 +120,26 @@ export class FirebaseService {
     });
     return { link: downloadUrl[0], filename: originalname, extension };
   }
+
+  async uploadFileToStorage(
+    file: Express.Multer.File,
+    folderName = '',
+  ): Promise<{ link: string; filename: string; extension: string }> {
+    const originalname = removeVietnameseTones(file.originalname);
+    const extension = originalname.split('.').pop();
+    const filename = uuidv4() + '_' + file.originalname;
+    const fileRef = this.storage.bucket().file(`${folderName}/${filename}`);
+
+    await fileRef.save(file.buffer, {
+      metadata: {
+        contentType: file.mimetype,
+      },
+    });
+
+    const downloadUrl = await fileRef.getSignedUrl({
+      action: 'read',
+      expires: '03-01-2500',
+    });
+    return { link: downloadUrl[0], filename: originalname, extension };
+  }
 }

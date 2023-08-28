@@ -16,6 +16,7 @@ import { ConversationModule } from './modules/chat/conversation/conversation.mod
 import { MessageModule } from './modules/chat/message/message.module';
 import { DocumentModule } from './modules/document/document.module';
 import { ChatGPTModule } from './modules/chatgpt/chatgpt.module';
+import { PostsModule } from './modules/posts/posts.module';
 dotenv.config();
 @Module({
   imports: [
@@ -32,6 +33,7 @@ dotenv.config();
     MessageModule,
     DocumentModule,
     ChatGPTModule,
+    PostsModule,
   ],
   providers: [
     {
