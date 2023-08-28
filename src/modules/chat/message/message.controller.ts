@@ -3,8 +3,8 @@ import {
   Controller,
   Get,
   HttpStatus,
-  Param,
   Post,
+  Query,
   UploadedFile,
   UseInterceptors,
 } from '@nestjs/common';
@@ -16,7 +16,11 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { MessageService } from './message.service';
-import { CreateMessageAttachmentDto, CreateMessageDto } from './dto';
+import {
+  CreateMessageAttachmentDto,
+  CreateMessageDto,
+  GetMessageDto,
+} from './dto';
 import { MessageSerialization } from './serialization';
 import { FileInterceptor } from '@nestjs/platform-express';
 
@@ -24,7 +28,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 @Controller('message')
 export class MessageController {
   constructor(private messageService: MessageService) {}
-  @Get('conversation/:conversationId')
+  @Get('conversation')
   @ApiResponse({
     status: HttpStatus.OK,
     description: 'Get all messages in conversation success',
@@ -32,10 +36,13 @@ export class MessageController {
     isArray: true,
   })
   @ApiOperation({ summary: 'Get all messages in conversation' })
-  getAllMessagesInConversation(
-    @Param('conversationId') conversationId: string,
-  ) {
-    return this.messageService.getAllMessagesInConversation(conversationId);
+  getAllMessagesInConversation(@Query() getMessageDto: GetMessageDto) {
+    const { conversationId, page, pageSize } = getMessageDto;
+    return this.messageService.getAllMessagesInConversation(
+      conversationId,
+      page,
+      pageSize,
+    );
   }
   @Post()
   @ApiResponse({

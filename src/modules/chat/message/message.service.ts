@@ -27,9 +27,17 @@ export class MessageService {
   }
   async getAllMessagesInConversation(
     conversationId: string,
+    page = 1,
+    pageSize = 20,
   ): Promise<Message[]> {
     try {
-      return await this.messageModel.find({ conversationId }).exec();
+      const skip = (page - 1) * pageSize;
+      return await this.messageModel
+        .find({ conversationId })
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(pageSize)
+        .exec();
     } catch (error) {
       throw new BadRequestException(error);
     }
