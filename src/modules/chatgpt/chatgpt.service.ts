@@ -1,10 +1,12 @@
 import { Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import axios from 'axios';
 
 @Injectable()
 export class ChatGPTService {
+  constructor(private readonly configService: ConfigService) {}
   async sendMessage(prompt: string): Promise<string> {
-    const apiKey = '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';
+    const apiKey = this.configService.get<string>('OPENAI_API_KEY');
     const apiUrl = 'https://api.openai.com/v1/chat/completions';
 
     const headers = {
