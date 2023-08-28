@@ -1,10 +1,12 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   HttpStatus,
   Param,
   Post,
+  Query,
   UploadedFile,
   UseInterceptors,
 } from '@nestjs/common';
@@ -16,7 +18,7 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { DocumentService } from './document.service';
-import { CreateFileDocumentDto } from './dto';
+import { CreateFileDocumentDto, FindDocumentDto } from './dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { DocumentSerialization } from './serialization/document.serialization';
 
@@ -54,5 +56,27 @@ export class DocumentController {
   @ApiOperation({ summary: 'Get document file by topicId' })
   getDocumentByTopicId(@Param('topicId') topicId: string) {
     return this.documentService.getFileDocumentByTopic(topicId);
+  }
+  @Delete(':id')
+  @ApiResponse({
+    status: HttpStatus.OK,
+    type: Boolean,
+    description: 'Get document file by documentId success',
+  })
+  @ApiOperation({ summary: 'Get document file by documentId' })
+  deleteDocument(@Param('id') documentId: string) {
+    return this.documentService.deleteDocument(documentId);
+  }
+  @Get()
+  @ApiResponse({
+    status: HttpStatus.OK,
+    type: [DocumentSerialization],
+    description: 'Get all document by topicId success',
+  })
+  @ApiOperation({ summary: 'Get all document by topicId' })
+  getAllDiscuss(@Query() findDocumentDto: FindDocumentDto) {
+    const discussList =
+      this.documentService.findAllByTopicIdAndType(findDocumentDto);
+    return discussList;
   }
 }

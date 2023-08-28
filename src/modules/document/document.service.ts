@@ -7,7 +7,7 @@ import {
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Files, FilesDocument } from 'src/common/schemas/document.schema';
-import { CreateFileDocumentDto } from './dto';
+import { CreateFileDocumentDto, FindDocumentDto } from './dto';
 import { FirebaseService } from '../lib/firebase/firebase.service';
 import { IDocumentFile } from './interface';
 import { UserService } from '../user/user.service';
@@ -63,6 +63,39 @@ export class DocumentService {
   async getFileDocumentByTopic(topicId: string): Promise<Files[]> {
     try {
       return await this.filesModel.find({ topicId: topicId }).exec();
+    } catch (error) {
+      throw new BadRequestException(error);
+    }
+  }
+  async deleteDocument(id: string): Promise<boolean> {
+    try {
+      const document = this.filesModel.findOneAndDelete({ id }).exec();
+      if (!document) {
+        return false;
+      }
+      return true;
+    } catch (error) {
+      throw new BadRequestException(error);
+    }
+  }
+
+  async findAllByTopicIdAndType(
+    findDocumentDto: FindDocumentDto,
+  ): Promise<Files[]> {
+    try {
+      const { topicId, type, limit, skip, sort } = findDocumentDto;
+      const sortField = 'createdAt';
+      const sortOptions: any = {};
+      sortOptions[sortField] = sort === 'asc' ? 1 : -1;
+      const query = type ? { topicId, type } : { topicId };
+      const documents = await this.filesModel
+        .find(query)
+        .sort(sortOptions)
+        .skip(skip)
+        .limit(limit)
+        .exec();
+
+      return documents;
     } catch (error) {
       throw new BadRequestException(error);
     }

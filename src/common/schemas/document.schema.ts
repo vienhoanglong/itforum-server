@@ -8,7 +8,7 @@ export class Files extends Document {
   name: string;
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'User' })
   createdBy: mongoose.Types.ObjectId;
-  @Prop({ type: mongoose.Types.ObjectId, ref: 'Topic' })
+  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Topic' })
   topicId: mongoose.Types.ObjectId;
   @Prop({ type: Number, default: 0 })
   status: number;
