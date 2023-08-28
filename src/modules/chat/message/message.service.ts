@@ -71,11 +71,20 @@ export class MessageService {
         typeMessage: '',
         file: '',
       };
-      payload.contentMessage = data;
-      payload.typeMessage = 'chatgpt';
-      payload.file = urlLogoChatGpt;
-      const messageChatgpt = new this.messageModel(payload);
-      return messageChatgpt.save();
+      if (data) {
+        payload.contentMessage = data;
+        payload.typeMessage = 'chatgpt';
+        payload.file = urlLogoChatGpt;
+        const messageChatgpt = new this.messageModel(payload);
+        return messageChatgpt.save();
+      } else {
+        payload.contentMessage =
+          'API Key hết hiệu lực, hoặc gặp lỗi vui lòng kiểm tra lại từ openai. Xin lỗi vì sự bất tiện này!';
+        payload.typeMessage = 'chatgpt';
+        payload.file = urlLogoChatGpt;
+        const messageChatgpt = new this.messageModel(payload);
+        return messageChatgpt.save();
+      }
     } catch (error) {
       throw new BadRequestException(error);
     }
