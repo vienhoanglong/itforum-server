@@ -1,5 +1,5 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { IsNumber, IsString } from 'class-validator';
+import { IsDate, IsNumber, IsString } from 'class-validator';
 
 export class GetMessageDto {
   @ApiProperty({ type: String })
@@ -12,4 +12,8 @@ export class GetMessageDto {
   @ApiPropertyOptional({ type: Number })
   @IsNumber()
   pageSize?: number;
+
+  @ApiPropertyOptional({ type: Date })
+  @IsDate()
+  oldestMessageTimestamp?: Date;
 }

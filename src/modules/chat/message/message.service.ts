@@ -29,11 +29,15 @@ export class MessageService {
     conversationId: string,
     page = 1,
     pageSize = 20,
+    oldestMessageTimestamp?: Date,
   ): Promise<Message[]> {
     try {
       const skip = (page - 1) * pageSize;
+      const query = oldestMessageTimestamp
+        ? { conversationId, createdAt: { $lt: oldestMessageTimestamp } }
+        : { conversationId };
       return await this.messageModel
-        .find({ conversationId })
+        .find(query)
         .sort({ createdAt: -1 })
         .skip(skip)
         .limit(pageSize)

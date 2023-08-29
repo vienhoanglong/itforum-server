@@ -37,11 +37,13 @@ export class MessageController {
   })
   @ApiOperation({ summary: 'Get all messages in conversation' })
   getAllMessagesInConversation(@Query() getMessageDto: GetMessageDto) {
-    const { conversationId, page, pageSize } = getMessageDto;
+    const { conversationId, page, pageSize, oldestMessageTimestamp } =
+      getMessageDto;
     return this.messageService.getAllMessagesInConversation(
       conversationId,
       page,
       pageSize,
+      oldestMessageTimestamp,
     );
   }
   @Post()
