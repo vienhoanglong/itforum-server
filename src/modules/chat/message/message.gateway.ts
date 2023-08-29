@@ -8,7 +8,8 @@ import {
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 import { MessageService } from './message.service';
-import { CreateMessageDto } from './dto';
+import { CreateMessageAttachmentDto, CreateMessageDto } from './dto';
+import { UploadedFile } from '@nestjs/common';
 
 @WebSocketGateway()
 export class MessageGateway
@@ -37,6 +38,22 @@ export class MessageGateway
       return savedMessage;
     } catch (error) {
       console.error('Error handling chat message:', error);
+    }
+  }
+  @SubscribeMessage('createMessageFile')
+  async handleCreateMessageFile(
+    @MessageBody() createMessageAttachmentDto: CreateMessageAttachmentDto,
+    @UploadedFile() file: Express.Multer.File,
+  ) {
+    try {
+      const result = await this.messageService.createMessageFile(
+        createMessageAttachmentDto,
+        file,
+      );
+      this.server.emit('newMessageFile', result);
+      return result;
+    } catch (error) {
+      console.error('Error handling chat message file:', error);
     }
   }
 }
