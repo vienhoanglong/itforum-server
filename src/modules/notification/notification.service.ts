@@ -117,7 +117,7 @@ export class NotificationService {
       throw new NotFoundException('Notification not found');
     }
 
-    updatedNotification.isDeleted = !updatedNotification.isDeleted;
+    updatedNotification.isPublished = !updatedNotification.isPublished;
     await updatedNotification.save();
 
     return {

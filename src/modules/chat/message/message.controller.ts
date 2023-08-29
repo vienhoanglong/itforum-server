@@ -23,11 +23,15 @@ import {
 } from './dto';
 import { MessageSerialization } from './serialization';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { MessageGateway } from './message.gateway';
 
 @ApiTags('Message')
 @Controller('message')
 export class MessageController {
-  constructor(private messageService: MessageService) {}
+  constructor(
+    private messageService: MessageService,
+    private messageGateway: MessageGateway,
+  ) {}
   @Get('conversation')
   @ApiResponse({
     status: HttpStatus.OK,
@@ -54,7 +58,7 @@ export class MessageController {
   })
   @ApiOperation({ summary: 'Create new conversation' })
   createMessage(@Body() createMessageDto: CreateMessageDto) {
-    return this.messageService.createMessage(createMessageDto);
+    return this.messageGateway.handleChatMessage(createMessageDto);
   }
 
   @Post('chat-gpt')

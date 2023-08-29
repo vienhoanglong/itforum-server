@@ -4,11 +4,12 @@ import { MessageController } from './message.controller';
 import { MessageService } from './message.service';
 import { FirebaseModule } from 'src/modules/lib/firebase/firebase.module';
 import { ChatGPTModule } from 'src/modules/chatgpt/chatgpt.module';
+import { MessageGateway } from './message.gateway';
 
 @Module({
   imports: [DatabaseModule, FirebaseModule, ChatGPTModule],
   controllers: [MessageController],
-  providers: [MessageService],
+  providers: [MessageService, MessageGateway],
   exports: [MessageService],
 })
 export class MessageModule {}
