@@ -54,9 +54,9 @@ export class MessageController {
   @ApiResponse({
     status: HttpStatus.OK,
     type: MessageSerialization,
-    description: 'Create conversation success',
+    description: 'Create message success',
   })
-  @ApiOperation({ summary: 'Create new conversation' })
+  @ApiOperation({ summary: 'Create new message' })
   createMessage(@Body() createMessageDto: CreateMessageDto) {
     return this.messageGateway.handleChatMessage(createMessageDto);
   }
@@ -69,7 +69,7 @@ export class MessageController {
   })
   @ApiOperation({ summary: 'Create new message chatgpt' })
   createMessageChatGPT(@Body() createMessageDto: CreateMessageDto) {
-    return this.messageService.createMessageChatGpt(createMessageDto);
+    return this.messageGateway.handleCreateMessageChatGpt(createMessageDto);
   }
   @Post('message-file')
   @ApiConsumes('multipart/form-data')

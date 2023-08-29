@@ -56,4 +56,18 @@ export class MessageGateway
       console.error('Error handling chat message file:', error);
     }
   }
+  @SubscribeMessage('createMessageChatGpt')
+  async handleCreateMessageChatGpt(
+    @MessageBody() createMessageDto: CreateMessageDto,
+  ) {
+    try {
+      const result = await this.messageService.createMessageChatGpt(
+        createMessageDto,
+      );
+      this.server.emit('newMessageChatGpt', result);
+      return result;
+    } catch (error) {
+      console.error('Error handling chatgpt message:', error);
+    }
+  }
 }
