@@ -1,4 +1,9 @@
-import { Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  HttpStatus,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Topic, TopicDocument } from 'src/common/schemas/topic.schema';
@@ -56,5 +61,33 @@ export class TopicService {
       return [];
     }
     return topics;
+  }
+  async moveTopicToTrashOrRestore(id: string): Promise<object> {
+    try {
+      const updatedTopic = await this.topicModel
+        .findById(id)
+        .select('+isDraft')
+        .exec();
+      if (!updatedTopic) {
+        throw new NotFoundException('Topic not found');
+      }
+
+      updatedTopic.isDraft = !updatedTopic.isDraft;
+      await updatedTopic.save();
+
+      return {
+        status: HttpStatus.OK,
+        message: 'Successfully moved topic to trash or restore',
+      };
+    } catch (error) {
+      throw new BadRequestException(error);
+    }
+  }
+  async getTopicOnTrash(): Promise<Topic[]> {
+    try {
+      return await this.topicModel.find({ isDraft: true }).exec();
+    } catch (error) {
+      throw new BadRequestException(error);
+    }
   }
 }

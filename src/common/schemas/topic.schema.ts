@@ -30,6 +30,8 @@ export class Topic extends Document {
   hide: boolean;
   @Prop()
   img: string;
+  @Prop({ type: Boolean, default: false, index: true })
+  isDraft: boolean;
 }
 
 export const TopicSchema = SchemaFactory.createForClass(Topic);

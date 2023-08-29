@@ -35,6 +35,29 @@ export class TopicController {
     return this.topicService.findAll();
   }
 
+  @Patch('trash-or-restore')
+  @ApiResponse({
+    status: HttpStatus.OK,
+    type: Object,
+    description: 'Move to trash or restore topic success',
+  })
+  @ApiOperation({ summary: 'Move to trash or restore topic' })
+  moveToTrashOrRestore(@Query('id') id: string) {
+    return this.topicService.moveTopicToTrashOrRestore(id);
+  }
+
+  @Get('trash')
+  @ApiResponse({
+    status: HttpStatus.OK,
+    type: [TopicSerialization],
+    description: 'Get topics from the trash success',
+  })
+  @ApiOperation({
+    summary: 'Get topics from the trash with isDraft set to false',
+  })
+  async getTopicOnTrash() {
+    return this.topicService.getTopicOnTrash();
+  }
   @Get('/list-topic')
   @ApiResponse({
     status: HttpStatus.OK,
