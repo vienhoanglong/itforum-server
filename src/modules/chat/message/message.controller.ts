@@ -88,7 +88,7 @@ export class MessageController {
     @Body() createMessageAttachmentDto: CreateMessageAttachmentDto,
     @UploadedFile() file: Express.Multer.File,
   ) {
-    return this.messageService.createMessageFile(
+    return this.messageGateway.handleCreateMessageFile(
       createMessageAttachmentDto,
       file,
     );
