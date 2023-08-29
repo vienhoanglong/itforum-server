@@ -69,7 +69,7 @@ export class DocumentService {
   }
   async deleteDocument(id: string): Promise<boolean> {
     try {
-      const document = this.filesModel.findOneAndDelete({ id }).exec();
+      const document = this.filesModel.findByIdAndDelete(id).exec();
       if (!document) {
         return false;
       }

@@ -64,8 +64,8 @@ export class DocumentController {
     description: 'Get document file by documentId success',
   })
   @ApiOperation({ summary: 'Get document file by documentId' })
-  deleteDocument(@Param('id') documentId: string) {
-    return this.documentService.deleteDocument(documentId);
+  deleteDocument(@Param('id') id: string) {
+    return this.documentService.deleteDocument(id);
   }
   @Get()
   @ApiResponse({
