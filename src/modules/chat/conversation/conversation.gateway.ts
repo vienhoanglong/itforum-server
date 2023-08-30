@@ -32,11 +32,12 @@ export class ConversationGateway
     @MessageBody() updatedBy: string,
   ) {
     try {
-      const updatedConversation = this.conversationService.updateConversation(
-        id,
-        updateConversationDto,
-        updatedBy,
-      );
+      const updatedConversation =
+        await this.conversationService.updateConversation(
+          id,
+          updateConversationDto,
+          updatedBy,
+        );
       this.server.emit('conversationUpdated', updatedConversation);
       return updatedConversation;
     } catch (error) {
@@ -49,7 +50,7 @@ export class ConversationGateway
     @UploadedFile() file: Express.Multer.File,
   ) {
     try {
-      const result = this.conversationService.updateImageConversation(
+      const result = await this.conversationService.updateImageConversation(
         updateImageConversationDto,
         file,
       );
