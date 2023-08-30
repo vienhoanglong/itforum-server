@@ -5,10 +5,11 @@ import { ConversationService } from './conversation.service';
 import { UserModule } from 'src/modules/user/user.module';
 import { MessageModule } from '../message/message.module';
 import { FirebaseModule } from 'src/modules/lib/firebase/firebase.module';
+import { ConversationGateway } from './conversation.gateway';
 
 @Module({
   imports: [DatabaseModule, UserModule, MessageModule, FirebaseModule],
   controllers: [ConversationController],
-  providers: [ConversationService],
+  providers: [ConversationService, ConversationGateway],
 })
 export class ConversationModule {}
