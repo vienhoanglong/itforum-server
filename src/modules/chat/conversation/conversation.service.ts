@@ -10,6 +10,7 @@ import { UserService } from 'src/modules/user/user.service';
 import { getCommaSeparatedNames } from 'src/constants/helper';
 import { MessageService } from '../message/message.service';
 import { FirebaseService } from 'src/modules/lib/firebase/firebase.service';
+import { MessageGateway } from '../message/message.gateway';
 
 @Injectable()
 export class ConversationService {
@@ -19,6 +20,7 @@ export class ConversationService {
     private userService: UserService,
     private messageService: MessageService,
     private readonly firebaseService: FirebaseService,
+    private readonly messageGateway: MessageGateway,
   ) {}
 
   async createConversation(
@@ -60,7 +62,7 @@ export class ConversationService {
         { new: true },
       );
       if (conversation) {
-        await this.messageService.createMessage({
+        await this.messageGateway.handleChatMessage({
           senderId: updatedBy,
           typeMessage: 'alert',
           contentMessage: 'The conversation was updated by',
@@ -159,7 +161,7 @@ export class ConversationService {
           { new: true },
         );
         if (response) {
-          await this.messageService.createMessage({
+          await this.messageGateway.handleChatMessage({
             senderId: payload.updatedBy,
             typeMessage: 'alert',
             contentMessage: 'changed the theme',

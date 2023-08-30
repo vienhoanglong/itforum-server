@@ -10,6 +10,6 @@ import { MessageGateway } from './message.gateway';
   imports: [DatabaseModule, FirebaseModule, ChatGPTModule],
   controllers: [MessageController],
   providers: [MessageService, MessageGateway],
-  exports: [MessageService],
+  exports: [MessageService, MessageGateway],
 })
 export class MessageModule {}

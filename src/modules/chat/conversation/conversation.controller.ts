@@ -25,11 +25,15 @@ import {
   UpdateImageConversationDto,
 } from './dto';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { ConversationGateway } from './conversation.gateway';
 
 @ApiTags('Conversation')
 @Controller('conversation')
 export class ConversationController {
-  constructor(private conversationService: ConversationService) {}
+  constructor(
+    private conversationService: ConversationService,
+    private readonly conversationGateway: ConversationGateway,
+  ) {}
   @Post()
   @ApiResponse({
     status: HttpStatus.OK,
@@ -52,7 +56,7 @@ export class ConversationController {
     @Param('updatedBy') updatedBy: string,
     @Body() updateConversationDto: UpdateConversationDto,
   ) {
-    return this.conversationService.updateConversation(
+    return this.conversationGateway.handleUpdateConversation(
       id,
       updateConversationDto,
       updatedBy,
@@ -135,7 +139,7 @@ export class ConversationController {
     @Body() updateImageConversationDto: UpdateImageConversationDto,
     @UploadedFile() file: Express.Multer.File,
   ) {
-    return this.conversationService.updateImageConversation(
+    return this.conversationGateway.handleUpdateConversationImage(
       updateImageConversationDto,
       file,
     );
