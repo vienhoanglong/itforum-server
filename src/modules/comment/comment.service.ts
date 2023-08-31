@@ -228,7 +228,7 @@ export class CommentService {
       const rightValue = comment.right;
       if (discussId) {
         await this.commentModel.deleteMany({
-          discussId: discussId,
+          discussId: this.utilService.convertToObjectId(discussId),
           left: { $gte: leftValue, $lte: rightValue },
         });
         await this.commentModel.updateMany(
