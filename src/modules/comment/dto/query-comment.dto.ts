@@ -1,8 +1,10 @@
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { ApiPropertyOptional } from '@nestjs/swagger';
 
 export class QueryCommentDTO {
-  @ApiProperty({ type: String })
-  discussId: string;
+  @ApiPropertyOptional({ type: String })
+  discussId?: string;
+  @ApiPropertyOptional({ type: String })
+  postsId?: string;
   @ApiPropertyOptional({ type: Number })
   skip?: number;
   @ApiPropertyOptional({ type: Number })

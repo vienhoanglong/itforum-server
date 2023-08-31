@@ -8,5 +8,6 @@ import { PostsController } from './posts.controller';
   imports: [DatabaseModule, FirebaseModule],
   controllers: [PostsController],
   providers: [PostsService],
+  exports: [PostsService],
 })
 export class PostsModule {}

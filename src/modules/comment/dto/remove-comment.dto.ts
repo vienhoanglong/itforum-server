@@ -1,8 +1,10 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 export class RemoveCommentDTO {
-  @ApiProperty({ type: String })
-  discussId: string;
+  @ApiPropertyOptional({ type: String })
+  discussId?: string;
+  @ApiPropertyOptional({ type: String })
+  postsId?: string;
   @ApiProperty({ type: String })
   commentId: string;
 }

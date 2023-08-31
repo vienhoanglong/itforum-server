@@ -4,9 +4,10 @@ import { CommentController } from './comment.controller';
 import { CommentService } from './comment.service';
 import { UtilModule } from '../util/util.module';
 import { DiscussModule } from '../discuss/discuss.module';
+import { PostsModule } from '../posts/posts.module';
 
 @Module({
-  imports: [DatabaseModule, UtilModule, DiscussModule],
+  imports: [DatabaseModule, UtilModule, DiscussModule, PostsModule],
   controllers: [CommentController],
   providers: [CommentService],
 })

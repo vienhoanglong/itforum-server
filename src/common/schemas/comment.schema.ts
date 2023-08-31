@@ -1,13 +1,15 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { Document } from 'mongoose';
 import { User } from './user.schema';
-import { Discuss } from './discuss.schema';
 
 export type CommentDocument = Comment & Document;
 @Schema({ timestamps: true })
 export class Comment extends Document {
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Discuss' })
-  discussId: Discuss;
+  discussId: mongoose.Types.ObjectId;
+
+  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Posts' })
+  postsId: mongoose.Types.ObjectId;
 
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'User' })
   createBy: User;
