@@ -40,7 +40,7 @@ export class User extends Document {
 
   @Prop({
     type: String,
-    default: "I'm a student",
+    default: "I'm a new user",
   })
   desc: string;
 

@@ -181,24 +181,44 @@ export class PostsService {
     updatePostsDto: UpdatePostsDto,
     thumbnail?: Express.Multer.File,
   ): Promise<Posts | any> {
-    if (thumbnail) {
-      const data = await this.firebaseService.uploadFileToStorage(
-        thumbnail,
-        'posts/',
+    try {
+      if (thumbnail) {
+        const data = await this.firebaseService.uploadFileToStorage(
+          thumbnail,
+          'posts/',
+        );
+        updatePostsDto.thumbnail = data?.link ?? '';
+        updatePostsDto.thumbnailName = data?.filename ?? '';
+      }
+      const updatePosts = {
+        ...updatePostsDto,
+        hashtag: updatePostsDto.hashtag
+          ? updatePostsDto.hashtag.split(',')
+          : '',
+      };
+      Object.keys(updatePosts).forEach(
+        (key) => updatePosts[key] === '' && delete updatePosts[key],
       );
-      updatePostsDto.thumbnail = data?.link ?? '';
-      updatePostsDto.thumbnailName = data?.filename ?? '';
+      const response = await this.postsModel.findByIdAndUpdate(
+        id,
+        updatePosts,
+        {
+          new: true,
+        },
+      );
+      return response;
+    } catch (error) {
+      throw new BadRequestException(error);
     }
-    const updatePosts = {
-      ...updatePostsDto,
-      hashtag: updatePostsDto.hashtag ? updatePostsDto.hashtag.split(',') : '',
-    };
-    Object.keys(updatePosts).forEach(
-      (key) => updatePosts[key] === '' && delete updatePosts[key],
-    );
-    const response = await this.postsModel.findByIdAndUpdate(id, updatePosts, {
-      new: true,
-    });
-    return response;
+  }
+
+  async searchPostsByTitle(title: string): Promise<Posts[]> {
+    try {
+      return await this.postsModel
+        .find({ title: { $regex: title, $options: 'i' } })
+        .exec();
+    } catch (error) {
+      throw new BadRequestException(error);
+    }
   }
 }

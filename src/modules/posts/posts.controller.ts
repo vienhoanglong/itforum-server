@@ -75,6 +75,11 @@ export class PostsController {
   getPostsOnTrash() {
     return this.postsService.getPostsOnTrash();
   }
+  @Get('search')
+  @ApiOperation({ summary: 'search posts by title' })
+  searchByTitle(@Query('title') title: string) {
+    return this.postsService.searchPostsByTitle(title);
+  }
   @Get('/posts-by-status')
   @ApiResponse({
     status: HttpStatus.OK,
