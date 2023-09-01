@@ -20,6 +20,10 @@ import { Message, MessageSchema } from '../schemas/message.schema';
 import { Files, FilesSchema } from '../schemas/document.schema';
 import { Posts, PostsSchema } from '../schemas/posts.schema';
 import { Report, ReportSchema } from '../schemas/report.schema';
+import {
+  HistoryNotification,
+  HistoryNotificationSchema,
+} from '../schemas/history-notification.schema';
 
 dotenv.config();
 @Module({
@@ -47,7 +51,7 @@ dotenv.config();
       { name: Files.name, schema: FilesSchema },
       { name: Posts.name, schema: PostsSchema },
       { name: Report.name, schema: ReportSchema },
-
+      { name: HistoryNotification.name, schema: HistoryNotificationSchema },
       //Add more...
     ]),
   ],
