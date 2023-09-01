@@ -221,4 +221,22 @@ export class PostsService {
       throw new BadRequestException(error);
     }
   }
+
+  async updatePostsReport(
+    id: string,
+    status: number,
+    reasonBan?: string,
+  ): Promise<Posts> {
+    try {
+      return await this.postsModel
+        .findByIdAndUpdate(
+          id,
+          { status, reasonBan: reasonBan ?? '' },
+          { new: true },
+        )
+        .exec();
+    } catch (error) {
+      throw new BadRequestException(error);
+    }
+  }
 }

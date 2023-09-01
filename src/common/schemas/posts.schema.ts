@@ -33,6 +33,9 @@ export class Posts extends Document {
 
   @Prop()
   slug: string;
+
+  @Prop()
+  reasonBan?: string;
 }
 
 export const PostsSchema = SchemaFactory.createForClass(Posts);

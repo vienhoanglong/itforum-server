@@ -35,21 +35,23 @@ export class ReportService {
       throw new BadRequestException(error);
     }
   }
-  async approveReport(reportId: string): Promise<Report> {
+  async approveReport(reportId: string, reasonBan?: string): Promise<Report> {
     try {
       const report = await this.reportModel.findById(reportId).exec();
       if (!report) throw new NotFoundException('Report not found');
       switch (report.reportBelong) {
         case 'Posts':
-          await this.postsService.updateStatusPosts(
+          await this.postsService.updatePostsReport(
             report.idReference.toString(),
             2,
+            reasonBan,
           );
           break;
         case 'Discuss':
-          await this.discussService.updateStatusDiscuss(
+          await this.discussService.updateDiscussReport(
             report.idReference.toString(),
             2,
+            reasonBan,
           );
           break;
         default:

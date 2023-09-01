@@ -4,28 +4,30 @@ import {
   Get,
   HttpStatus,
   Param,
-  Patch,
   Post,
   Query,
 } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { ReportService } from './report.service';
-import { CreateReportDto, FindReportDto } from './dto';
+import { ApproveReportDto, CreateReportDto, FindReportDto } from './dto';
 import { Report } from 'src/common/schemas/report.schema';
 @ApiTags('Report')
 @Controller('report')
 export class ReportController {
   constructor(private readonly reportService: ReportService) {}
 
-  @Patch(':id/approve')
+  @Post('/approve')
   @ApiResponse({
     status: HttpStatus.OK,
     type: Report,
     description: 'Approve report success',
   })
   @ApiOperation({ summary: 'Approve report' })
-  approveReport(@Param('id') reportId: string) {
-    return this.reportService.approveReport(reportId);
+  approveReport(@Body() approveReportDto: ApproveReportDto) {
+    return this.reportService.approveReport(
+      approveReportDto.reportId,
+      approveReportDto.reportId,
+    );
   }
   @Post()
   @ApiResponse({
@@ -45,7 +47,7 @@ export class ReportController {
     description: 'Get report by id success',
   })
   @ApiOperation({ summary: 'Get report by reportId' })
-  findDiscussById(@Param('id') id: string) {
+  findReportById(@Param('id') id: string) {
     return this.reportService.findByReportId(id);
   }
 
@@ -56,7 +58,7 @@ export class ReportController {
     description: 'Get all report success',
   })
   @ApiOperation({ summary: 'Get all report' })
-  getAllDiscuss(@Query() findReportDto: FindReportDto) {
+  getAllReport(@Query() findReportDto: FindReportDto) {
     const { skip, limit, sort } = findReportDto;
     return this.reportService.findAllReport(skip, limit, sort);
   }

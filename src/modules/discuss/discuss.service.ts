@@ -193,4 +193,21 @@ export class DiscussService {
       throw new BadRequestException(error);
     }
   }
+  async updateDiscussReport(
+    id: string,
+    statusDiscuss: number,
+    reasonBan?: string,
+  ): Promise<Discuss> {
+    try {
+      return await this.discussModel
+        .findByIdAndUpdate(
+          id,
+          { statusDiscuss, reasonBan: reasonBan ?? '' },
+          { new: true },
+        )
+        .exec();
+    } catch (error) {
+      throw new BadRequestException(error);
+    }
+  }
 }
