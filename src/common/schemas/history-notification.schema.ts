@@ -13,8 +13,11 @@ export class HistoryNotification extends Document {
   @Prop({ enum: ['ALL', 'Some'], default: 'ALL' })
   type: string;
 
-  @Prop({ type: [{ type: String, ref: 'User' }] })
-  sendTo: mongoose.Types.ObjectId[];
+  @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }] })
+  sendTo: mongoose.Schema.Types.ObjectId[];
+
+  @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }] })
+  readBy: mongoose.Schema.Types.ObjectId[];
 }
 
 export const HistoryNotificationSchema =

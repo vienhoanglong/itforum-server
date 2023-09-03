@@ -12,6 +12,7 @@ import {
 } from 'src/common/schemas/notification.schema';
 import { CreateNotificationDto, UpdateNotificationDto } from './dto';
 import { FirebaseService } from '../lib/firebase/firebase.service';
+import { HistoryNotificationService } from '../history-notification/history-notification.service';
 
 @Injectable()
 export class NotificationService {
@@ -19,6 +20,7 @@ export class NotificationService {
     @InjectModel(Notification.name)
     private noticeModel: Model<NotificationDocument>,
     private readonly firebaseService: FirebaseService,
+    private readonly historyNotificationService: HistoryNotificationService,
   ) {}
   async createNotification(
     createNotificationDto: CreateNotificationDto,
@@ -30,7 +32,16 @@ export class NotificationService {
       newNotice.file = data.link ?? undefined;
       newNotice.filename = data?.filename ?? undefined;
     }
-    return await newNotice.save();
+    const newNotification = await newNotice.save();
+    if (newNotification) {
+      await this.historyNotificationService.createHistoryNotification({
+        title: newNotification.titleNotice,
+        link: `/notifications-detail/${newNotification._id}`,
+        type: 'ALL',
+        sendTo: [],
+      });
+    }
+    return newNotification;
   }
   async findAllNotification(
     skip?: number,

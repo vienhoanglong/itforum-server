@@ -10,7 +10,7 @@ export class Conversation extends Document {
   nameConversation?: string;
   @Prop({ type: String })
   descConversation?: string;
-  @Prop({ type: String })
+  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'User' })
   createdBy: string;
   @Prop({ type: String })
   imgConversation?: string;

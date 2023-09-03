@@ -9,8 +9,8 @@ export class Notification extends Document {
   @Prop()
   descNotice: string;
 
-  @Prop({ type: mongoose.Types.ObjectId, ref: 'User' })
-  createdBy?: mongoose.Types.ObjectId;
+  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'User' })
+  createdBy?: mongoose.Schema.Types.ObjectId;
 
   @Prop({
     enum: ['recruitment', 'event', 'subject', 'other'],
