@@ -53,7 +53,12 @@ export class HistoryNotificationService {
     userId: string,
   ): Promise<HistoryNotification[]> {
     return this.historyNotificationModel
-      .find({ sendTo: userId, type: 'ALL' })
+      .find({
+        $or: [
+          { $and: [{ type: 'ALL' }, { sendTo: [] }] },
+          { sendTo: { $in: [userId] } },
+        ],
+      })
       .exec();
   }
 }
