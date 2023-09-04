@@ -91,4 +91,17 @@ export class ReportService {
       throw new BadRequestException(error);
     }
   }
+
+  async rejectReport(reportId: string): Promise<Report> {
+    try {
+      const report = await this.reportModel.findById(reportId).exec();
+      if (!report) {
+        throw new NotFoundException('Report not found');
+      }
+      report.status = 'Rejected';
+      return await report.save();
+    } catch (error) {
+      throw new BadRequestException(error);
+    }
+  }
 }

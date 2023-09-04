@@ -4,6 +4,7 @@ import {
   Get,
   HttpStatus,
   Param,
+  Patch,
   Post,
   Query,
 } from '@nestjs/common';
@@ -61,5 +62,15 @@ export class ReportController {
   getAllReport(@Query() findReportDto: FindReportDto) {
     const { skip, limit, sort } = findReportDto;
     return this.reportService.findAllReport(skip, limit, sort);
+  }
+  @Patch(':reportId')
+  @ApiResponse({
+    status: HttpStatus.OK,
+    type: [Report],
+    description: 'Get all report success',
+  })
+  @ApiOperation({ summary: 'Get all report' })
+  rejectReport(@Param('reportId') reportId: string) {
+    return this.reportService.rejectReport(reportId);
   }
 }
