@@ -39,6 +39,7 @@ export class NotificationService {
         link: `/notifications-detail/${newNotification._id}`,
         type: 'ALL',
         sendTo: [],
+        createdBy: newNotification.createdBy.toString(),
       });
     }
     return newNotification;
