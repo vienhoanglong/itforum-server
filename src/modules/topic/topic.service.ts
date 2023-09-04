@@ -90,11 +90,14 @@ export class TopicService {
       throw new BadRequestException(error);
     }
   }
-  async findTopicNameById(topicId: string): Promise<string> {
+  async findTopicNameById(topicId: string): Promise<any> {
     try {
       const topic = await this.topicModel.findById(topicId);
       if (topic) {
-        return topic.name;
+        return {
+          name: topic.name,
+          color: topic.color,
+        };
       }
       return '';
     } catch (error) {

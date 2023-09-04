@@ -100,24 +100,34 @@ export class DashboardService {
       const topicDiscuss = await this.discussService.getTopTopic();
       const allTopics = [...topicPosts, ...topicDiscuss];
       const topicCounts = {};
+
       for (const topic of allTopics) {
         const topicId = topic._id;
         const topicCount = topic.count;
-        const topicName = await this.topicService.findTopicNameById(topicId);
-        if (topicName) {
-          if (topicCounts[topicName]) {
-            topicCounts[topicName] += topicCount;
+        const topicInfo = await this.topicService.findTopicNameById(topicId);
+
+        if (topicInfo) {
+          const { name, color } = topicInfo;
+          if (topicCounts[name]) {
+            topicCounts[name].count += topicCount;
           } else {
-            topicCounts[topicName] = topicCount;
+            topicCounts[name] = {
+              count: topicCount,
+              color: color,
+            };
           }
         }
       }
+
       const sortedTopics = Object.keys(topicCounts).map((topicName) => ({
         topic: topicName,
-        count: topicCounts[topicName],
+        count: topicCounts[topicName].count,
+        color: topicCounts[topicName].color,
       }));
+
       sortedTopics.sort((a, b) => b.count - a.count);
       const top3Topics = sortedTopics.slice(0, 3);
+
       return top3Topics;
     } catch (error) {
       throw new BadRequestException(error);
