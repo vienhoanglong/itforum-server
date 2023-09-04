@@ -34,7 +34,7 @@ export class Posts extends Document {
   @Prop()
   slug: string;
 
-  @Prop()
+  @Prop({ type: String, default: '' })
   reasonBan?: string;
 }
 

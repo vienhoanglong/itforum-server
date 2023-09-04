@@ -22,7 +22,7 @@ export class Discuss extends Document {
   isDraft: boolean;
   @Prop({ type: Number, default: 1, index: true })
   statusDiscuss: number;
-  @Prop()
+  @Prop({ type: String, default: '' })
   reasonBan?: string;
 }
 export const DiscussSchema = SchemaFactory.createForClass(Discuss);
