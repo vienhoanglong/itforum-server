@@ -210,4 +210,42 @@ export class DiscussService {
       throw new BadRequestException(error);
     }
   }
+  async countDocumentDiscuss(start: any, end: any): Promise<number> {
+    try {
+      return await this.discussModel
+        .countDocuments({
+          createdAt: {
+            $gte: start.toDate(),
+            $lte: end.toDate(),
+          },
+        })
+        .exec();
+    } catch (error) {
+      throw new BadRequestException(error);
+    }
+  }
+
+  async getTopTopic(): Promise<any> {
+    try {
+      return await this.discussModel.aggregate([
+        {
+          $unwind: '$topic',
+        },
+        {
+          $group: {
+            _id: '$topic',
+            count: { $sum: 1 },
+          },
+        },
+        {
+          $sort: { count: -1 },
+        },
+        {
+          $limit: 3,
+        },
+      ]);
+    } catch (error) {
+      throw new BadRequestException(error);
+    }
+  }
 }

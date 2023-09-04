@@ -9,5 +9,6 @@ import { PostsModule } from '../posts/posts.module';
   imports: [DatabaseModule, DiscussModule, PostsModule],
   controllers: [ReportController],
   providers: [ReportService],
+  exports: [ReportService],
 })
 export class ReportModule {}

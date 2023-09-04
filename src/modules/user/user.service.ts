@@ -126,4 +126,19 @@ export class UserService {
       throw new BadRequestException(error);
     }
   }
+
+  async countUserByRole(): Promise<any> {
+    try {
+      return await this.userModel.aggregate([
+        {
+          $group: {
+            _id: '$role',
+            count: { $sum: 1 },
+          },
+        },
+      ]);
+    } catch (error) {
+      throw new BadRequestException(error);
+    }
+  }
 }

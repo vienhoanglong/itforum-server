@@ -59,6 +59,7 @@ export class HistoryNotificationService {
           { sendTo: { $in: [userId] } },
         ],
       })
+      .sort({ createdAt: -1 })
       .exec();
   }
 }

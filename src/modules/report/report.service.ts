@@ -104,4 +104,21 @@ export class ReportService {
       throw new BadRequestException(error);
     }
   }
+  async typeReportCount(): Promise<any> {
+    try {
+      return await this.reportModel.aggregate([
+        {
+          $unwind: '$typeReport',
+        },
+        {
+          $group: {
+            _id: '$typeReport',
+            count: { $sum: 1 },
+          },
+        },
+      ]);
+    } catch (error) {
+      throw new BadRequestException(error);
+    }
+  }
 }

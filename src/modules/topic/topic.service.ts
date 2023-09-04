@@ -90,4 +90,15 @@ export class TopicService {
       throw new BadRequestException(error);
     }
   }
+  async findTopicNameById(topicId: string): Promise<string> {
+    try {
+      const topic = await this.topicModel.findById(topicId);
+      if (topic) {
+        return topic.name;
+      }
+      return '';
+    } catch (error) {
+      throw new BadRequestException(error);
+    }
+  }
 }

@@ -19,6 +19,7 @@ import { ChatGPTModule } from './modules/chatgpt/chatgpt.module';
 import { PostsModule } from './modules/posts/posts.module';
 import { ReportModule } from './modules/report/report.module';
 import { HistoryNotificationModule } from './modules/history-notification/history-notification.module';
+import { DashboardModule } from './modules/dashboard/dashboard.module';
 dotenv.config();
 @Module({
   imports: [
@@ -38,6 +39,7 @@ dotenv.config();
     PostsModule,
     ReportModule,
     HistoryNotificationModule,
+    DashboardModule,
   ],
   providers: [
     {

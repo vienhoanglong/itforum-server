@@ -239,4 +239,43 @@ export class PostsService {
       throw new BadRequestException(error);
     }
   }
+
+  async countDocumentPosts(start: any, end: any): Promise<number> {
+    try {
+      return await this.postsModel
+        .countDocuments({
+          createdAt: {
+            $gte: start.toDate(),
+            $lte: end.toDate(),
+          },
+        })
+        .exec();
+    } catch (error) {
+      throw new BadRequestException(error);
+    }
+  }
+
+  async getTopHashTag(): Promise<any> {
+    try {
+      return await this.postsModel.aggregate([
+        {
+          $unwind: '$hashtag',
+        },
+        {
+          $group: {
+            _id: '$hashtag',
+            count: { $sum: 1 },
+          },
+        },
+        {
+          $sort: { count: -1 },
+        },
+        {
+          $limit: 3,
+        },
+      ]);
+    } catch (error) {
+      throw new BadRequestException(error);
+    }
+  }
 }
