@@ -18,6 +18,9 @@ export class HistoryNotification extends Document {
 
   @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }] })
   readBy: mongoose.Schema.Types.ObjectId[];
+
+  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'User' })
+  createdBy: mongoose.Types.ObjectId;
 }
 
 export const HistoryNotificationSchema =

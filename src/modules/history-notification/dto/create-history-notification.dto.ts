@@ -17,4 +17,7 @@ export class CreateHistoryNotificationDto {
   @ApiProperty({ type: [String], example: ['user1', 'user2'] })
   @IsArray()
   sendTo: string[];
+
+  @ApiProperty({ type: String })
+  createdBy: string;
 }
