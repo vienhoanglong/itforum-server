@@ -2,19 +2,24 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { Document } from 'mongoose';
 
 export type ReportDocument = Report & Document;
+
+enum ReportType {
+  Spam = 'Spam',
+  Violence = 'Violence',
+  CopyrightInfringement = 'Copyright infringement',
+  Misinformation = 'Misinformation',
+  Other = 'Other',
+}
+
 @Schema({ timestamps: true })
 export class Report extends Document {
   @Prop({
     required: true,
-    enum: [
-      'Spam',
-      'Violence',
-      'Copyright infringement',
-      'Misinformation',
-      'Other',
-    ],
+    type: [String],
+    enum: Object.values(ReportType),
   })
-  typeReport: string;
+  typeReport: string[];
+
   @Prop({
     required: true,
     enum: ['Pending', 'Rejected', 'Approved'],

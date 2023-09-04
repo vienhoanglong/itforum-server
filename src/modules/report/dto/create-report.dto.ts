@@ -22,11 +22,12 @@ enum ReportBelong {
 
 export class CreateReportDto {
   @ApiProperty({
+    isArray: true, // Specify that it's an array
     enum: ReportType,
   })
-  @IsEnum(ReportType)
+  @IsEnum(ReportType, { each: true }) // Validate each item in the array
   @IsNotEmpty()
-  typeReport: string;
+  typeReport: string[];
 
   @ApiProperty({
     enum: ReportBelong,
