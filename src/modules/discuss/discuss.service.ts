@@ -59,7 +59,10 @@ export class DiscussService {
       sortOptions[sortField] = sort === 'asc' ? 1 : -1;
 
       const query = topicId
-        ? { topic: topicId, isDraft: false }
+        ? {
+            topic: { $in: [new mongoose.Types.ObjectId(topicId)] },
+            isDraft: false,
+          }
         : { isDraft: false };
       const pipeline: any[] = [
         {
@@ -240,14 +243,13 @@ export class DiscussService {
       const sortField = 'createdAt';
       const sortOptions: any = {};
       sortOptions[sortField] = sort === 'asc' ? 1 : -1;
-      const query: { [x: string]: string | number | boolean } = {};
-      if (statusDiscuss) {
-        query.statusDiscuss = Number(statusDiscuss);
+
+      const query: any = {};
+      if (topicId !== undefined) {
+        query.topic = { $in: [new mongoose.Types.ObjectId(topicId)] };
       }
       query.isDraft = isDraft ?? false;
-      if (topicId !== undefined) {
-        query.topic = topicId;
-      }
+      query.statusDiscuss = statusDiscuss ? Number(statusDiscuss) : 1;
       const pipeline: any[] = [
         {
           $match: query,

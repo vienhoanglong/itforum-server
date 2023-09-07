@@ -152,7 +152,7 @@ export class PostsService {
       }
       query.isDraft = isDraft ?? false;
       if (hashtag) {
-        query.hashtag = { $in: [hashtag] };
+        query.hashtag = { $in: [new mongoose.Types.ObjectId(hashtag)] };
       }
       const pipeline: any[] = [
         {
@@ -229,7 +229,10 @@ export class PostsService {
       sortOptions[sortField] = sort === 'asc' ? 1 : -1;
 
       const query = hashtag
-        ? { hashtag: hashtag, isDraft: false }
+        ? {
+            hashtag: { $in: [new mongoose.Types.ObjectId(hashtag)] },
+            isDraft: false,
+          }
         : { isDraft: false };
       const pipeline: any[] = [
         {
