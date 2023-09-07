@@ -91,7 +91,7 @@ export class MessageService {
         payload.file = urlLogoChatGpt;
         const messageChatgpt = new this.messageModel(payload);
         const response = await messageChatgpt.save();
-        response && this.messageGateway.handleChatGptReply(response);
+        response && (await this.messageGateway.handleChatGptReply(response));
         return response;
       } else {
         payload.contentMessage =
@@ -100,7 +100,7 @@ export class MessageService {
         payload.file = urlLogoChatGpt;
         const messageChatgpt = new this.messageModel(payload);
         const response = await messageChatgpt.save();
-        response && this.messageGateway.handleChatGptReply(response);
+        response && (await this.messageGateway.handleChatGptReply(response));
         return response;
       }
     } catch (error) {

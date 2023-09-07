@@ -72,7 +72,7 @@ export class MessageGateway
   }
 
   @SubscribeMessage('messageChatGptReply')
-  async handleChatGptReply(@MessageBody() payload: any) {
+  async handleChatGptReply(payload: any) {
     try {
       return payload && this.server.emit('chatGptReply', payload);
     } catch (error) {
