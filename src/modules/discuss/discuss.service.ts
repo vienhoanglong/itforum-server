@@ -5,7 +5,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import mongoose, { Model } from 'mongoose';
 import { Discuss, DiscussDocument } from 'src/common/schemas/discuss.schema';
 import { CreateDiscussDTO, UpdateDiscussDTO } from './dto';
 import slugify from 'slugify';
@@ -53,6 +53,7 @@ export class DiscussService {
     topicId?: string,
   ): Promise<Discuss[]> {
     try {
+      const skipNumber = typeof skip === 'number' ? skip : 0;
       const sortField = 'createdAt';
       const sortOptions: any = {};
       sortOptions[sortField] = sort === 'asc' ? 1 : -1;
@@ -60,12 +61,43 @@ export class DiscussService {
       const query = topicId
         ? { topic: topicId, isDraft: false }
         : { isDraft: false };
-      const discussList = await this.discussModel
-        .find(query)
-        .sort(sortOptions)
-        .skip(skip)
-        .limit(limit)
-        .exec();
+      const pipeline: any[] = [
+        {
+          $match: query,
+        },
+        {
+          $sort: sortOptions,
+        },
+        {
+          $skip: skipNumber,
+        },
+        {
+          $lookup: {
+            from: 'comments',
+            let: { discussId: '$_id' },
+            pipeline: [
+              {
+                $match: {
+                  $expr: { $eq: ['$$discussId', '$discussId'] },
+                },
+              },
+            ],
+            as: 'totalComment',
+          },
+        },
+        {
+          $addFields: {
+            totalComment: { $size: '$totalComment' },
+          },
+        },
+      ];
+      if (limit && limit > 0) {
+        pipeline.push({
+          $limit: limit,
+        });
+      }
+      const discussList = await this.discussModel.aggregate(pipeline);
+
       return discussList;
     } catch (error) {
       throw new BadRequestException(error);
@@ -96,7 +128,38 @@ export class DiscussService {
 
   async findByDiscussId(id: string): Promise<Discuss> {
     try {
-      return this.discussModel.findById(id);
+      const pipeline = [
+        {
+          $match: { _id: new mongoose.Types.ObjectId(id) },
+        },
+        {
+          $lookup: {
+            from: 'comments',
+            let: { discussId: '$_id' },
+            pipeline: [
+              {
+                $match: {
+                  $expr: { $eq: ['$$discussId', '$discussId'] },
+                },
+              },
+            ],
+            as: 'totalComment',
+          },
+        },
+        {
+          $addFields: {
+            totalComment: { $size: '$totalComment' },
+          },
+        },
+      ];
+
+      const discuss = await this.discussModel.aggregate(pipeline);
+
+      if (discuss.length === 0) {
+        throw new NotFoundException('Discuss not found');
+      }
+
+      return discuss[0];
     } catch (error) {
       throw new BadRequestException(error);
     }

@@ -24,6 +24,8 @@ export class Discuss extends Document {
   statusDiscuss: number;
   @Prop({ type: String, default: '' })
   reasonBan?: string;
+  @Prop({ type: Number, default: 0 })
+  totalComment: number;
 }
 export const DiscussSchema = SchemaFactory.createForClass(Discuss);
 

@@ -5,7 +5,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import mongoose, { Model } from 'mongoose';
 import { Posts, PostsDocument } from 'src/common/schemas/posts.schema';
 import { CreatePostsDto, UpdatePostsDto } from './dto';
 import { FirebaseService } from '../lib/firebase/firebase.service';
@@ -43,7 +43,38 @@ export class PostsService {
   }
   async findByPostsId(id: string): Promise<Posts> {
     try {
-      return this.postsModel.findById(id);
+      const pipeline = [
+        {
+          $match: { _id: new mongoose.Types.ObjectId(id) },
+        },
+        {
+          $lookup: {
+            from: 'comments',
+            let: { postsId: '$_id' },
+            pipeline: [
+              {
+                $match: {
+                  $expr: { $eq: ['$$postsId', '$postsId'] },
+                },
+              },
+            ],
+            as: 'totalComment',
+          },
+        },
+        {
+          $addFields: {
+            totalComment: { $size: '$totalComment' },
+          },
+        },
+      ];
+
+      const posts = await this.postsModel.aggregate(pipeline);
+
+      if (posts.length === 0) {
+        throw new NotFoundException('Posts not found');
+      }
+
+      return posts[0];
     } catch (error) {
       throw new BadRequestException(error);
     }
@@ -158,19 +189,51 @@ export class PostsService {
     hashtag?: string,
   ): Promise<Posts[]> {
     try {
+      const skipNumber = typeof skip === 'number' ? skip : 0;
       const sortField = 'createdAt';
       const sortOptions: any = {};
       sortOptions[sortField] = sort === 'asc' ? 1 : -1;
 
       const query = hashtag
-        ? { topic: hashtag, isDraft: false }
+        ? { hashtag: hashtag, isDraft: false }
         : { isDraft: false };
-      const postsList = await this.postsModel
-        .find(query)
-        .sort(sortOptions)
-        .skip(skip)
-        .limit(limit)
-        .exec();
+      const pipeline: any[] = [
+        {
+          $match: query,
+        },
+        {
+          $sort: sortOptions,
+        },
+        {
+          $skip: skipNumber,
+        },
+        {
+          $lookup: {
+            from: 'comments',
+            let: { postsId: '$_id' },
+            pipeline: [
+              {
+                $match: {
+                  $expr: { $eq: ['$$postsId', '$postsId'] },
+                },
+              },
+            ],
+            as: 'totalComment',
+          },
+        },
+        {
+          $addFields: {
+            totalComment: { $size: '$totalComment' },
+          },
+        },
+      ];
+      if (limit && limit > 0) {
+        pipeline.push({
+          $limit: limit,
+        });
+      }
+      const postsList = await this.postsModel.aggregate(pipeline);
+
       return postsList;
     } catch (error) {
       throw new BadRequestException(error);

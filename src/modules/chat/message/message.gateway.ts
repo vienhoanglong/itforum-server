@@ -70,4 +70,13 @@ export class MessageGateway
       console.error('Error handling chatgpt message:', error);
     }
   }
+
+  @SubscribeMessage('messageChatGptReply')
+  async handleChatGptReply(@MessageBody() payload: any) {
+    try {
+      return payload && this.server.emit('chatGptReply', payload);
+    } catch (error) {
+      console.error('Error handling chatgpt reply message:', error);
+    }
+  }
 }

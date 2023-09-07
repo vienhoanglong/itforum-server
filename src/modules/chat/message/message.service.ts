@@ -7,6 +7,7 @@ import { FirebaseService } from 'src/modules/lib/firebase/firebase.service';
 import { IMessage } from './interface';
 import { isImageFile, urlLogoChatGpt } from 'src/constants/helper';
 import { ChatGPTService } from 'src/modules/chatgpt/chatgpt.service';
+import { MessageGateway } from './message.gateway';
 
 @Injectable()
 export class MessageService {
@@ -15,6 +16,7 @@ export class MessageService {
     private messageModel: Model<MessageDocument>,
     private readonly firebaseService: FirebaseService,
     private readonly chatGPTService: ChatGPTService,
+    private readonly messageGateway: MessageGateway,
   ) {}
 
   async createMessage(createMessageDto: CreateMessageDto): Promise<Message> {
@@ -88,14 +90,18 @@ export class MessageService {
         payload.typeMessage = 'chatgpt';
         payload.file = urlLogoChatGpt;
         const messageChatgpt = new this.messageModel(payload);
-        return await messageChatgpt.save();
+        const response = await messageChatgpt.save();
+        response && this.messageGateway.handleChatGptReply(response);
+        return response;
       } else {
         payload.contentMessage =
           'API Key hết hiệu lực, hoặc gặp lỗi vui lòng kiểm tra lại từ openai. Xin lỗi vì sự bất tiện này!';
         payload.typeMessage = 'chatgpt';
         payload.file = urlLogoChatGpt;
         const messageChatgpt = new this.messageModel(payload);
-        return await messageChatgpt.save();
+        const response = await messageChatgpt.save();
+        response && this.messageGateway.handleChatGptReply(response);
+        return response;
       }
     } catch (error) {
       throw new BadRequestException(error);
