@@ -248,8 +248,9 @@ export class DiscussService {
       if (topicId !== undefined) {
         query.topic = { $in: [new mongoose.Types.ObjectId(topicId)] };
       }
-      query.isDraft = isDraft ?? false;
+      query.isDraft = isDraft ? Boolean(isDraft) : false;
       query.statusDiscuss = statusDiscuss ? Number(statusDiscuss) : 1;
+      console.log(query);
       const pipeline: any[] = [
         {
           $match: query,
