@@ -282,7 +282,7 @@ export class DiscussService {
       ];
       if (limit && limit > 0) {
         pipeline.push({
-          $limit: limit,
+          $limit: parseInt(limit.toString()),
         });
       }
       const discussList = await this.discussModel.aggregate(pipeline);

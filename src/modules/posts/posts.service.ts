@@ -186,7 +186,7 @@ export class PostsService {
       ];
       if (limit && limit > 0) {
         pipeline.push({
-          $limit: limit,
+          $limit: parseInt(limit.toString()),
         });
       }
       const postsList = await this.postsModel.aggregate(pipeline);
