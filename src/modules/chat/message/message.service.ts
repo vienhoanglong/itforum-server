@@ -7,16 +7,17 @@ import { FirebaseService } from 'src/modules/lib/firebase/firebase.service';
 import { IMessage } from './interface';
 import { isImageFile, urlLogoChatGpt } from 'src/constants/helper';
 import { ChatGPTService } from 'src/modules/chatgpt/chatgpt.service';
-import { MessageGateway } from './message.gateway';
-
+import { WebSocketServer } from '@nestjs/websockets';
+import { Server } from 'socket.io';
 @Injectable()
 export class MessageService {
+  @WebSocketServer()
+  server: Server;
   constructor(
     @InjectModel(Message.name)
     private messageModel: Model<MessageDocument>,
     private readonly firebaseService: FirebaseService,
     private readonly chatGPTService: ChatGPTService,
-    private readonly messageGateway: MessageGateway,
   ) {}
 
   async createMessage(createMessageDto: CreateMessageDto): Promise<Message> {
@@ -91,7 +92,7 @@ export class MessageService {
         payload.file = urlLogoChatGpt;
         const messageChatgpt = new this.messageModel(payload);
         const response = await messageChatgpt.save();
-        response && (await this.messageGateway.handleChatGptReply(response));
+        response && this.server.emit('chatGptReply', payload);
         return response;
       } else {
         payload.contentMessage =
@@ -100,7 +101,7 @@ export class MessageService {
         payload.file = urlLogoChatGpt;
         const messageChatgpt = new this.messageModel(payload);
         const response = await messageChatgpt.save();
-        response && (await this.messageGateway.handleChatGptReply(response));
+        response && this.server.emit('chatGptReply', payload);
         return response;
       }
     } catch (error) {
