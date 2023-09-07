@@ -141,21 +141,55 @@ export class PostsService {
     hashtag?: string,
   ): Promise<Posts[]> {
     try {
+      const skipNumber = typeof skip === 'number' ? skip : 0;
       const sortField = 'createdAt';
       const sortOptions: any = {};
       sortOptions[sortField] = sort === 'asc' ? 1 : -1;
-      const query: { [x: string]: string | number | boolean } = {};
-      query.status = Number(status);
-      query.isDraft = isDraft ?? false;
-      if (hashtag !== undefined) {
-        query.topic = hashtag;
+
+      const query: { [x: string]: any } = {};
+      if (status) {
+        query.status = Number(status);
       }
-      const postsList = await this.postsModel
-        .find(query)
-        .sort(sortOptions)
-        .skip(skip)
-        .limit(limit)
-        .exec();
+      query.isDraft = isDraft ?? false;
+      if (hashtag) {
+        query.hashtag = { $in: [hashtag] };
+      }
+      const pipeline: any[] = [
+        {
+          $match: query,
+        },
+        {
+          $sort: sortOptions,
+        },
+        {
+          $skip: skipNumber,
+        },
+        {
+          $lookup: {
+            from: 'comments',
+            let: { postsId: '$_id' },
+            pipeline: [
+              {
+                $match: {
+                  $expr: { $eq: ['$$postsId', '$postsId'] },
+                },
+              },
+            ],
+            as: 'totalComment',
+          },
+        },
+        {
+          $addFields: {
+            totalComment: { $size: '$totalComment' },
+          },
+        },
+      ];
+      if (limit && limit > 0) {
+        pipeline.push({
+          $limit: limit,
+        });
+      }
+      const postsList = await this.postsModel.aggregate(pipeline);
       return postsList;
     } catch (error) {
       throw new BadRequestException(error);

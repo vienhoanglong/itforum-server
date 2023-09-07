@@ -236,21 +236,55 @@ export class DiscussService {
     topicId?: string,
   ): Promise<Discuss[]> {
     try {
+      const skipNumber = typeof skip === 'number' ? skip : 0;
       const sortField = 'createdAt';
       const sortOptions: any = {};
       sortOptions[sortField] = sort === 'asc' ? 1 : -1;
       const query: { [x: string]: string | number | boolean } = {};
-      query.statusDiscuss = Number(statusDiscuss);
+      if (statusDiscuss) {
+        query.statusDiscuss = Number(statusDiscuss);
+      }
       query.isDraft = isDraft ?? false;
       if (topicId !== undefined) {
         query.topic = topicId;
       }
-      const discussList = await this.discussModel
-        .find(query)
-        .sort(sortOptions)
-        .skip(skip)
-        .limit(limit)
-        .exec();
+      const pipeline: any[] = [
+        {
+          $match: query,
+        },
+        {
+          $sort: sortOptions,
+        },
+        {
+          $skip: skipNumber,
+        },
+        {
+          $lookup: {
+            from: 'comments',
+            let: { discussId: '$_id' },
+            pipeline: [
+              {
+                $match: {
+                  $expr: { $eq: ['$$discussId', '$discussId'] },
+                },
+              },
+            ],
+            as: 'totalComment',
+          },
+        },
+        {
+          $addFields: {
+            totalComment: { $size: '$totalComment' },
+          },
+        },
+      ];
+      if (limit && limit > 0) {
+        pipeline.push({
+          $limit: limit,
+        });
+      }
+      const discussList = await this.discussModel.aggregate(pipeline);
+
       return discussList;
     } catch (error) {
       throw new BadRequestException(error);
