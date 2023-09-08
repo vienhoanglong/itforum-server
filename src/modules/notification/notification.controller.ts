@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Delete,
@@ -28,11 +29,15 @@ import {
   UpdateNotificationDto,
 } from './dto';
 import { NotificationSerialization } from './serialization';
+import { RedisCacheService } from '../lib/redis-cache/redis-cache.service';
 
 @ApiTags('Notification')
 @Controller('notification')
 export class NotificationController {
-  constructor(private readonly notificationService: NotificationService) {}
+  constructor(
+    private readonly notificationService: NotificationService,
+    private readonly redisCacheService: RedisCacheService,
+  ) {}
 
   @Post()
   @ApiConsumes('multipart/form-data')
@@ -47,14 +52,24 @@ export class NotificationController {
     description: 'Create notification success',
   })
   @ApiOperation({ summary: 'Create notification' })
-  createNotification(
+  async createNotification(
     @UploadedFile() file: Express.Multer.File,
     @Body() createNotificationDto: CreateNotificationDto,
   ) {
-    return this.notificationService.createNotification(
-      createNotificationDto,
-      file,
-    );
+    try {
+      const response = await this.notificationService.createNotification(
+        createNotificationDto,
+        file,
+      );
+      await this.redisCacheService.set(
+        `notification:${response._id}`,
+        JSON.stringify(response),
+        864000,
+      );
+      return response;
+    } catch (error) {
+      throw new BadRequestException(error);
+    }
   }
 
   @Get('trash')
@@ -136,8 +151,22 @@ export class NotificationController {
     description: 'Get notification by id success',
   })
   @ApiOperation({ summary: 'Get notification by discussId' })
-  findDiscussById(@Param('id') id: string) {
-    return this.notificationService.findByNotificationId(id);
+  async findDiscussById(@Param('id') id: string) {
+    try {
+      const cacheData = await this.redisCacheService.get(`notification:${id}`);
+      if (cacheData) {
+        return JSON.parse(cacheData);
+      }
+      const response = await this.notificationService.findByNotificationId(id);
+      await this.redisCacheService.set(
+        `notification:${response._id}`,
+        JSON.stringify(response),
+        864000,
+      );
+      return response;
+    } catch (error) {
+      throw new BadRequestException(error);
+    }
   }
 
   @Get()

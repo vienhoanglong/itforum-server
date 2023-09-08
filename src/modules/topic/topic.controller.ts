@@ -9,6 +9,7 @@ import {
   HttpStatus,
   Query,
   Patch,
+  BadRequestException,
 } from '@nestjs/common';
 import { TopicService } from './topic.service';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
@@ -20,10 +21,14 @@ import {
   UpdateTopicDTO,
 } from './dto';
 import { TopicSerialization } from './serialization';
+import { RedisCacheService } from '../lib/redis-cache/redis-cache.service';
 @ApiTags('Topic')
 @Controller('topic')
 export class TopicController {
-  constructor(private readonly topicService: TopicService) {}
+  constructor(
+    private readonly topicService: TopicService,
+    private readonly redisCacheService: RedisCacheService,
+  ) {}
   @Get()
   @ApiResponse({
     status: HttpStatus.OK,
@@ -86,8 +91,22 @@ export class TopicController {
     description: 'Get topic by topicId success',
   })
   @ApiOperation({ summary: 'Get topic by topicId' })
-  findOne(@Param('id') id: string) {
-    return this.topicService.findOne(id);
+  async findOne(@Param('id') id: string) {
+    try {
+      const cacheData = await this.redisCacheService.get(`topic:${id}`);
+      if (cacheData) {
+        return JSON.parse(cacheData);
+      }
+      const response = await this.topicService.findOne(id);
+      await this.redisCacheService.set(
+        `topic:${response._id}`,
+        JSON.stringify(response),
+        864000,
+      );
+      return response;
+    } catch (error) {
+      throw new BadRequestException(error);
+    }
   }
 
   @Post()
@@ -97,8 +116,18 @@ export class TopicController {
     description: 'Create topic success',
   })
   @ApiOperation({ summary: 'Create new topic' })
-  create(@Body() createTopicDTO: CreateTopicDTO) {
-    return this.topicService.create(createTopicDTO);
+  async create(@Body() createTopicDTO: CreateTopicDTO) {
+    try {
+      const response = await this.topicService.create(createTopicDTO);
+      await this.redisCacheService.set(
+        `topic:${response._id}`,
+        JSON.stringify(response),
+        864000,
+      );
+      return response;
+    } catch (error) {
+      throw new BadRequestException(error);
+    }
   }
 
   @Put(':id')
