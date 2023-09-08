@@ -7,12 +7,8 @@ import { FirebaseService } from 'src/modules/lib/firebase/firebase.service';
 import { IMessage } from './interface';
 import { isImageFile, urlLogoChatGpt } from 'src/constants/helper';
 import { ChatGPTService } from 'src/modules/chatgpt/chatgpt.service';
-import { WebSocketServer } from '@nestjs/websockets';
-import { Server } from 'socket.io';
 @Injectable()
 export class MessageService {
-  @WebSocketServer()
-  server: Server;
   constructor(
     @InjectModel(Message.name)
     private messageModel: Model<MessageDocument>,
@@ -63,7 +59,6 @@ export class MessageService {
       };
       if (file) {
         const data = await this.firebaseService.uploadFileIntoMessages(file);
-        console.log(data);
         payload.file = data?.link;
         payload.nameFile = data?.filename;
         payload.typeMessage = isImageFile(data.extension) ? 'image' : 'file';
@@ -86,38 +81,32 @@ export class MessageService {
         typeMessage: '',
         file: '',
       };
-      if (data) {
-        payload.contentMessage = data;
-        payload.typeMessage = 'chatgpt';
-        payload.file = urlLogoChatGpt;
-        const messageChatgpt = new this.messageModel(payload);
-        const response = await messageChatgpt.save();
-        response && this.server.emit('chatGptReply', response);
-        return response;
-      } else {
-        payload.contentMessage =
-          'API Key hết hiệu lực, hoặc gặp lỗi vui lòng kiểm tra lại từ openai. Xin lỗi vì sự bất tiện này!';
-        payload.typeMessage = 'chatgpt';
-        payload.file = urlLogoChatGpt;
-        const messageChatgpt = new this.messageModel(payload);
-        const response = await messageChatgpt.save();
-        response && this.server.emit('chatGptReply', response);
-        return response;
-      }
+      payload.contentMessage = data;
+      payload.typeMessage = 'chatgpt';
+      payload.file = urlLogoChatGpt;
+      const messageChatgpt = new this.messageModel(payload);
+      const response = await messageChatgpt.save();
+      return response;
     } catch (error) {
       throw new BadRequestException(error);
     }
   }
   async createMessageChatGpt(
     createMessageDto: CreateMessageDto,
-  ): Promise<Message> {
+  ): Promise<{ response: any; chatgptReply: any }> {
     try {
       const message = new this.messageModel(createMessageDto);
       const response = await message.save();
+      const data: any = {
+        response: response,
+      };
       if (response) {
-        this.createMessageWithChatGpt(createMessageDto);
+        const chatgptReply = await this.createMessageWithChatGpt(
+          createMessageDto,
+        );
+        data.chatgptReply = chatgptReply;
       }
-      return response;
+      return data;
     } catch (error) {
       throw new BadRequestException(error);
     }

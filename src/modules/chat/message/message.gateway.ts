@@ -64,7 +64,8 @@ export class MessageGateway
       const result = await this.messageService.createMessageChatGpt(
         createMessageDto,
       );
-      this.server.emit('newMessageChatGpt', result);
+      this.server.emit('newMessageChatGpt', result.response);
+      this.server.emit('chatGptReply', result.chatgptReply);
       return result;
     } catch (error) {
       console.error('Error handling chatgpt message:', error);

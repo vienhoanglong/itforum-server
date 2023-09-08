@@ -10,6 +10,7 @@ import {
   Query,
   UploadedFile,
   UseInterceptors,
+  BadRequestException,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -30,6 +31,7 @@ import { templateVerificationEmail } from 'src/constants/helper';
 import { RoleGuard } from 'src/common/guards/role.guard';
 import { Roles } from 'src/common/decorator/role.decorator';
 import { FindUsersByListIdDto } from './dto/find-user.dto';
+import { RedisCacheService } from '../lib/redis-cache/redis-cache.service';
 
 @ApiTags('User')
 @Controller('user')
@@ -38,6 +40,7 @@ export class UserController {
     private readonly userService: UserService,
     private readonly firebaseService: FirebaseService,
     private readonly mailService: MailService,
+    private readonly redisCacheService: RedisCacheService,
   ) {}
 
   @UseGuards(RoleGuard)
@@ -59,8 +62,23 @@ export class UserController {
   }
 
   @Get('list-avatar')
-  listAvatar() {
-    return this.firebaseService.getListAvatar();
+  async listAvatar() {
+    try {
+      const cacheKey = 'list-avatar';
+      const cacheData = await this.redisCacheService.get(cacheKey);
+      if (cacheData) {
+        return JSON.parse(cacheData);
+      }
+      const listAvatar = await this.firebaseService.getListAvatar();
+      await this.redisCacheService.set(
+        cacheKey,
+        JSON.stringify(listAvatar),
+        1000 * 60 * 60 * 24 * 10,
+      );
+      return listAvatar;
+    } catch (error) {
+      throw new BadRequestException(error);
+    }
   }
 
   @Get('search')
