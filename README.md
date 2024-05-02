@@ -38,3 +38,8 @@ npm run start
 # or
 yarn start
 ```
+## Contributors
+This project exists thanks to all the people who contribute. Below are the main contributors:
+
+- [@tranhoanglong11](https://github.com/tranhoanglong11) - Tran Hoang Long
+- [@vienhoanglong](https://github.com/vienhoanglong) - Vien Hoang Long
